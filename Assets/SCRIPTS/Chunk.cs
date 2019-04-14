@@ -33,28 +33,31 @@ public class Chunk
                     int r = Random.Range(-2, 4);
 
                     int value = Mathf.FloorToInt(
-                        Mathf.PerlinNoise((x + position.x + 1000) / 128f, (z + position.z + 1000) / 128f) * 32f  
-                        + Mathf.PerlinNoise((x + position.x + 1000 +86) / 64f, (z + position.z + 1000 +86) / 64f) * 12f 
-                        + Mathf.PerlinNoise((x + position.x + 1000 -600) / 32f, (z + position.z + 1000 -600) / 32f) * 10f
-                        + Mathf.PerlinNoise((x + position.x + 1000 +5) / 512f, (z + position.z + 1000 +5) / 512f) * 40f  
+                        Mathf.PerlinNoise((x + position.x + World.Seed) / 128f, (z + position.z + World.Seed) / 128f) * 32f  
+                        + Mathf.PerlinNoise((x + position.x + World.Seed +86) / 64f, (z + position.z + World.Seed +86) / 64f) * 12f 
+                        + Mathf.PerlinNoise((x + position.x + World.Seed -600) / 32f, (z + position.z + World.Seed -600) / 32f) * 10f
+                        + Mathf.PerlinNoise((x + position.x + World.Seed +5) / 512f, (z + position.z + World.Seed +5) / 512f) * 40f
+                        - Mathf.PerlinNoise((x + position.x + World.Seed -100) / 32f, (z + position.z + World.Seed -100) / 32f) * 2f  
                         
                         + 16
                         );
 
-                    if (value < y + position.y)
+                    if (value < y + position.y && y+position.y>50)
                     {
                         index++;
                         continue;
                     } 
                     
-                    //if(y+position.y>50 && value > y + position.y)
-                        //blocks[index] = Block.Water;
+                    if(y+position.y<50 && value < y + position.y)
+                        blocks[index] = Block.Water;
 
-                    if (value == y + position.y)
+                    if (value == y + position.y && y+position.y>50)
                         blocks[index] = Block.Grass;
 
+                    if (value >= (y + position.y) && y+position.y <=50 && value - 4 + r/2 < (y + position.y) && value<53)
+                        blocks[index] = Block.Sand;
 
-                    else if (value > (y + position.y) && value - 6 + r < (y + position.y))
+                    else if (value > (y + position.y) && value - 8 + r < (y + position.y))
                         blocks[index] = Block.Dirt;
 
                     else if (value - 6 + r >= (y + position.y))

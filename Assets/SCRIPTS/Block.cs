@@ -8,7 +8,8 @@ public enum Block
     Stone = 0x0001,
     Grass = 0x0002,
     Dirt = 0x0003,
-    Water = 0x0004
+    Water = 0x0004,
+    Sand = 0x0005
 }
 
 public static class Block_Extentions{
