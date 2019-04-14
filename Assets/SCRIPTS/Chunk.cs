@@ -32,14 +32,23 @@ public class Chunk
                 {
                     int r = Random.Range(-2, 4);
 
-                    int value = Mathf.FloorToInt(Mathf.PerlinNoise((x + position.x+1000) / 128f, (z + position.z+1000) / 128f) * 32f + 30);
-                    
+                    int value = Mathf.FloorToInt(
+                        Mathf.PerlinNoise((x + position.x + 1000) / 128f, (z + position.z + 1000) / 128f) * 32f  
+                        + Mathf.PerlinNoise((x + position.x + 1000 +86) / 64f, (z + position.z + 1000 +86) / 64f) * 12f 
+                        + Mathf.PerlinNoise((x + position.x + 1000 -600) / 32f, (z + position.z + 1000 -600) / 32f) * 10f
+                        + Mathf.PerlinNoise((x + position.x + 1000 +5) / 512f, (z + position.z + 1000 +5) / 512f) * 40f  
+                        
+                        + 16
+                        );
 
                     if (value < y + position.y)
                     {
                         index++;
                         continue;
-                    }
+                    } 
+                    
+                    //if(y+position.y>50 && value > y + position.y)
+                        //blocks[index] = Block.Water;
 
                     if (value == y + position.y)
                         blocks[index] = Block.Grass;
@@ -50,7 +59,7 @@ public class Chunk
 
                     else if (value - 6 + r >= (y + position.y))
                         blocks[index] = Block.Stone;
-
+                    
                     index++;
 
                 }

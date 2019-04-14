@@ -8,6 +8,7 @@ public class World : MonoBehaviour
     public Material material;
     public Texture texture;
     public static World instance;
+    public static int Seed;
 
     Dictionary<Vector3Int, Chunk> chunkPosMap;
 
@@ -20,6 +21,7 @@ public class World : MonoBehaviour
         chunkPosMap = new Dictionary<Vector3Int, Chunk>();
 
         instance = this;
+        Seed = Random.Range(8000, 9000);
     }
 
     void Start()

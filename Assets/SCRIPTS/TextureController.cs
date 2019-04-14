@@ -55,6 +55,9 @@ public static class TextureController
         if (block == Block.Stone)
             return "stone";
 
+        if (block == Block.Water)
+            return "water";
+
         if (block == Block.Dirt)
             return "dirt";
 

@@ -8,6 +8,7 @@ TextureImporter:
     21300006: grassTop
     21300008: default
     21300010: grassSideZ
+    21300012: water
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -209,13 +210,33 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
       spriteID: e63e51bb71ff6c14fb740c00dc8a92bc
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: water
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 96
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f1c27fe81e4360f4f85a6f1a43063983
       vertices: []
       indices: 
       edges: []
