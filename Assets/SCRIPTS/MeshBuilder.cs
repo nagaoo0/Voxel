@@ -31,6 +31,18 @@ public class MeshBuilder : ThreadedProcess
 
         //generate faces
         int index = 0;
+
+        Chunk[] neighbors = new Chunk[6];
+        bool[] exists = new bool[6];
+
+        exists[0] = World.instance.GetChunkAt(position.x, position.y, position.z + Chunk.size.z, out neighbors[0]);
+        exists[1] = World.instance.GetChunkAt(position.x + Chunk.size.x, position.y, position.z, out neighbors[1]);
+        exists[2] = World.instance.GetChunkAt(position.x, position.y, position.z - Chunk.size.z, out neighbors[2]);
+        exists[3] = World.instance.GetChunkAt(position.x - Chunk.size.x, position.y, position.z, out neighbors[3]);
+
+        exists[4] = World.instance.GetChunkAt(position.x, position.y + Chunk.size.y, position.z, out neighbors[4]);
+        exists[5] = World.instance.GetChunkAt(position.x, position.y - Chunk.size.y, position.z, out neighbors[5]);
+
         for (int x = 0; x < Chunk.size.x; x++)
         {
             for (int y = 0; y < Chunk.size.y; y++)
@@ -58,13 +70,13 @@ public class MeshBuilder : ThreadedProcess
                         sizeEstimate += 4;
                     }
 
-                    if (z == 0)
+                    if (z == 0 && (exists[2] == false || neighbors[2].GetBlockAt(position.x + x, position.y + y, position.z + z - 1) == Block.Air))
                     {
                         faces[index] |= (byte)Direction.South;
                         sizeEstimate += 4;
                     }
 
-                    if (z == Chunk.size.z - 1)
+                    if (z == Chunk.size.z - 1 && (exists[0] == false || (neighbors[0].GetBlockAt(position.x + x, position.y + y, position.z + z + 1) == Block.Air)))
                     {
                         faces[index] |= (byte)Direction.North;
                         sizeEstimate += 4;
@@ -83,13 +95,13 @@ public class MeshBuilder : ThreadedProcess
                         sizeEstimate += 4;
                     }
 
-                    if (x == 0)
+                    if (x == 0 && (exists[3] == false || neighbors[3].GetBlockAt(position.x + x - 1, position.y + y, position.z + z) == Block.Air))
                     {
                         faces[index] |= (byte)Direction.West;
                         sizeEstimate += 4;
                     }
 
-                    if (x == Chunk.size.x - 1)
+                    if (x == Chunk.size.x - 1 && (exists[1] == false || neighbors[1].GetBlockAt(position.x + x + 1, position.y + y, position.z + z) == Block.Air))
                     {
                         faces[index] |= (byte)Direction.East;
                         sizeEstimate += 4;
@@ -109,13 +121,13 @@ public class MeshBuilder : ThreadedProcess
                         sizeEstimate += 4;
                     }
 
-                    if (y == 0)
+                    if (y == 0 && (exists[5] == false || neighbors[5].GetBlockAt(position.x + x, position.y + y - 1, position.z + z) == Block.Air))
                     {
                         faces[index] |= (byte)Direction.Down;
                         sizeEstimate += 4;
                     }
 
-                    if (y == Chunk.size.y - 1)
+                    if (y == Chunk.size.y - 1 && (exists[4] == false || neighbors[4].GetBlockAt(position.x + x, position.y + y + 1, position.z + z) == Block.Air))
                     {
                         faces[index] |= (byte)Direction.Up;
                         sizeEstimate += 4;
@@ -288,7 +300,7 @@ public class MeshBuilder : ThreadedProcess
         else copy.Clear();
 
 
-        Debug.Log(vertexIndex);
+        //Debug.Log(vertexIndex);
         if (isVisible == false || vertexIndex == 0) return copy;
 
         if (vertexIndex > 65000) copy.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;

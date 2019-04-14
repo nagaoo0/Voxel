@@ -22,7 +22,7 @@ public static class TextureController
 
             
         }
-        Debug.Log(sprites.Length);
+        //Debug.Log(sprites.Length);
     }
 
     public static bool AddTextures (Block block, Direction direction, int index, Vector2[] uvs){
