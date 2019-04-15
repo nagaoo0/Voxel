@@ -20,6 +20,8 @@ public class World : MonoBehaviour
         TextureController.Initialize("", texture);
         chunkPosMap = new Dictionary<Vector3Int, Chunk>();
 
+        MeshColliderRegion.Initialize();
+
         instance = this;
         Seed = Random.Range(8000, 9000);
     }

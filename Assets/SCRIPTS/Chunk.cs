@@ -36,10 +36,11 @@ public class Chunk
                         Mathf.PerlinNoise((x + position.x + World.Seed) / 128f, (z + position.z + World.Seed) / 128f) * 32f  
                         + Mathf.PerlinNoise((x + position.x + World.Seed +86) / 64f, (z + position.z + World.Seed +86) / 64f) * 12f 
                         + Mathf.PerlinNoise((x + position.x + World.Seed -600) / 32f, (z + position.z + World.Seed -600) / 32f) * 10f
-                        + Mathf.PerlinNoise((x + position.x + World.Seed +5) / 512f, (z + position.z + World.Seed +5) / 512f) * 40f
-                        - Mathf.PerlinNoise((x + position.x + World.Seed -100) / 32f, (z + position.z + World.Seed -100) / 32f) * 2f  
+                        + (Mathf.PerlinNoise((x + position.x + World.Seed +5) / 512f, (z + position.z + World.Seed +5) / 512f) * 40f)
+                        * (Mathf.PerlinNoise((x + position.x + World.Seed +200) / 124f, (z + position.z + World.Seed +200) / 124f) 
+                        + (Mathf.PerlinNoise((x + position.x + World.Seed -100) / 200f, (z + position.z + World.Seed -100) / 200f) * 5f)/10)
                         
-                        + 16
+                        + 20
                         );
 
                     if (value < y + position.y && y+position.y>50)
@@ -80,6 +81,8 @@ public class Chunk
         yield return new WaitUntil(() => builder.Update());
 
         mesh = builder.GetMesh(ref mesh);
+        MeshColliderRegion.AddMeshCollider(this, mesh);
+
         ready = true;
         builder = null;
     }
@@ -99,5 +102,4 @@ public class Chunk
     {
         return x >= 0 && y >= 0 && z >= 0 && x < Chunk.size.x && y < Chunk.size.y && z < Chunk.size.z;
     }
-
 }
