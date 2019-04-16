@@ -58,6 +58,7 @@
      <Compile Include="Assets\SCRIPTS\Direction.cs" />
      <Compile Include="Assets\SCRIPTS\MeshBuilder.cs" />
      <Compile Include="Assets\SCRIPTS\MeshColliderRegion.cs" />
+     <Compile Include="Assets\SCRIPTS\StructureGenerator.cs" />
      <Compile Include="Assets\SCRIPTS\TextureController.cs" />
      <Compile Include="Assets\SCRIPTS\ThreadedProcess.cs" />
      <Compile Include="Assets\SCRIPTS\Vector3Int.cs" />

@@ -9,7 +9,10 @@ public enum Block
     Grass = 0x0002,
     Dirt = 0x0003,
     Water = 0x0004,
-    Sand = 0x0005
+    Sand = 0x0005,
+    WoodLog = 0x0006,
+    Leaves = 0x0007,
+    WoodPlanks = 0x0008
 }
 
 public static class Block_Extentions{

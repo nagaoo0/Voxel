@@ -33,29 +33,39 @@ public class Chunk
                     int r = Random.Range(-2, 4);
 
                     int value = Mathf.FloorToInt(
-                        Mathf.PerlinNoise((x + position.x + World.Seed) / 128f, (z + position.z + World.Seed) / 128f) * 32f  
-                        + Mathf.PerlinNoise((x + position.x + World.Seed +86) / 64f, (z + position.z + World.Seed +86) / 64f) * 12f 
-                        + Mathf.PerlinNoise((x + position.x + World.Seed -600) / 32f, (z + position.z + World.Seed -600) / 32f) * 10f
-                        + (Mathf.PerlinNoise((x + position.x + World.Seed +5) / 512f, (z + position.z + World.Seed +5) / 512f) * 40f)
-                        * (Mathf.PerlinNoise((x + position.x + World.Seed +200) / 124f, (z + position.z + World.Seed +200) / 124f) 
-                        + (Mathf.PerlinNoise((x + position.x + World.Seed -100) / 200f, (z + position.z + World.Seed -100) / 200f) * 5f)/10)
-                        
+                        Mathf.PerlinNoise((x + position.x + World.Seed) / 128f, (z + position.z + World.Seed) / 128f) * 32f
+                        + Mathf.PerlinNoise((x + position.x + World.Seed + 86) / 64f, (z + position.z + World.Seed + 86) / 64f) * 12f
+                        + Mathf.PerlinNoise((x + position.x + World.Seed - 600) / 32f, (z + position.z + World.Seed - 600) / 32f) * 10f
+                        + (Mathf.PerlinNoise((x + position.x + World.Seed + 5) / 512f, (z + position.z + World.Seed + 5) / 512f) * 40f)
+                        * (Mathf.PerlinNoise((x + position.x + World.Seed + 200) / 124f, (z + position.z + World.Seed + 200) / 124f)
+                        + (Mathf.PerlinNoise((x + position.x + World.Seed - 100) / 200f, (z + position.z + World.Seed - 100) / 200f) * 5f) / 10)
+
                         + 20
                         );
 
-                    if (value < y + position.y && y+position.y>50)
+                    //Generate blocks
+
+                    if (y + position.y > value)
+                    {
+                        if (y + position.y == value + 5 && value > 52 && Random.Range(0, 50) == 1)
+                        {
+                            StructureGenerator.GenerateTree(position, x, y, z, blocks);
+                        }
+                    }
+
+                    if (value < y + position.y && y + position.y > 50)
                     {
                         index++;
                         continue;
-                    } 
-                    
-                    if(y+position.y<50 && value < y + position.y)
+                    }
+
+                    if (y + position.y < 50 && value < y + position.y)
                         blocks[index] = Block.Water;
 
-                    if (value == y + position.y && y+position.y>50)
+                    if (value == y + position.y && y + position.y > 50)
                         blocks[index] = Block.Grass;
 
-                    if (value >= (y + position.y) && y+position.y <=50 && value - 4 + r/2 < (y + position.y) && value<53)
+                    if (value >= (y + position.y) && y + position.y <= 50 && value - 4 + r / 2 < (y + position.y) && value < 53)
                         blocks[index] = Block.Sand;
 
                     else if (value > (y + position.y) && value - 8 + r < (y + position.y))
@@ -63,12 +73,14 @@ public class Chunk
 
                     else if (value - 6 + r >= (y + position.y))
                         blocks[index] = Block.Stone;
-                    
+
                     index++;
 
                 }
             }
         }
+
+        StructureGenerator.GetWaitingBlocks(position, blocks);
 
     }
 
