@@ -5,30 +5,32 @@ using UnityEngine;
 public class StructureGenerator
 {
 
-    public static void GenerateTree(Vector3Int pos, int x, int y, int z, Block[] blocks)
+    public static void GenerateRock(Vector3Int pos, int x, int y, int z, Block[] blocks)
     {
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 3; i++)
         {
-            for (int j = 0; j < 5; j++)
+            for (int j = 0; j < 3; j++)
             {
-                if (IsPointInBounds(x + i, y, z + j))
+                for (int k =0; k<3; k++){
+                if (IsPointInBounds(x + i, y-k, z + j))
                 {
-                    blocks[((x + i) * Chunk.size.y * Chunk.size.z + y * Chunk.size.z + (z + j))] = Block.Sand;
+                    blocks[((x + i) * Chunk.size.y * Chunk.size.z + (y-k) * Chunk.size.z + (z + j))] = Block.Stone;
                 }
                 else
                 {
-                    Vector3Int neghborChunkPos = World.WorldToChunkCoords(pos.x+i+x,pos.y+y,pos.z+j+z);
+                    Vector3Int neghborChunkPos = World.WorldToChunkCoords(pos.x+i+x,pos.y+y-k,pos.z+j+z);
 
                     List<BlockPositions> list;
                     if (WaitingBlocks.TryGetValue(neghborChunkPos, out list)){
-                        list.Add(new BlockPositions(Block.Sand, PositionToIndex(pos.x+i+x,pos.y+y,pos.z+j+z)));
+                        list.Add(new BlockPositions(Block.Stone, PositionToIndex(pos.x+i+x,pos.y+y-k,pos.z+j+z)));
                     } else {
                         list = new List<BlockPositions> ();
-                        list.Add(new BlockPositions(Block.Sand, PositionToIndex(pos.x+i+x,pos.y+y,pos.z+j+z)));
+                        list.Add(new BlockPositions(Block.Stone, PositionToIndex(pos.x+i+x,pos.y+y-k,pos.z+j+z)));
 
                         WaitingBlocks.Add(neghborChunkPos,list);
                     }
+                }
                 }
             }
         }

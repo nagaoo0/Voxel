@@ -44,37 +44,37 @@ public class Chunk
                         );
 
                     //Generate blocks
-
                     if (y + position.y > value)
                     {
-                        if (y + position.y == value + 5 && value > 52 && Random.Range(0, 50) == 1)
+                        if (y + position.y == value + 1 && value > 52 && value < 60 && Random.Range(0, 350) == 1)
                         {
-                            StructureGenerator.GenerateTree(position, x, y, z, blocks);
+                            StructureGenerator.GenerateRock(position, x, y, z, blocks);
+                        }
+                        else
+                        if (y + position.y < 50 && blocks[index] == Block.Air)
+                            blocks[index] = Block.Water;
+                        else
+                        {
+                            index++;
+                            continue;
                         }
                     }
 
-                    if (value < y + position.y && y + position.y > 50)
-                    {
-                        index++;
-                        continue;
-                    }
 
-                    if (y + position.y < 50 && value < y + position.y)
-                        blocks[index] = Block.Water;
 
-                    if (value == y + position.y && y + position.y > 50)
+                    if (value == y + position.y && y + position.y > 50 && blocks[index] == Block.Air)
                         blocks[index] = Block.Grass;
 
-                    if (value >= (y + position.y) && y + position.y <= 50 && value - 4 + r / 2 < (y + position.y) && value < 53)
+                    if (value >= (y + position.y) && y + position.y <= 50 && value - 4 + r / 2 < (y + position.y) && value < 53 && blocks[index] == Block.Air)
                         blocks[index] = Block.Sand;
 
-                    else if (value > (y + position.y) && value - 8 + r < (y + position.y))
+                    else if (value > (y + position.y) && value - 8 + r < (y + position.y) && blocks[index] == Block.Air)
                         blocks[index] = Block.Dirt;
 
-                    else if (value - 6 + r >= (y + position.y))
+                    else if (value - 6 + r >= (y + position.y) && blocks[index] == Block.Air)
                         blocks[index] = Block.Stone;
-
                     index++;
+
 
                 }
             }

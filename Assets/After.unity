@@ -420,7 +420,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: 9e55b1dbe69c45040816136d582fc25f, type: 2}
   texture: {fileID: 2800000, guid: 091c2c0dd4930124b8e7bcdd9a973d3d, type: 3}
-  radius: 2
+  radius: 12
   height: 8
 --- !u!4 &1249081278
 Transform:
