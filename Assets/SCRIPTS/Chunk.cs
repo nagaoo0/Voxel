@@ -32,6 +32,12 @@ public class Chunk
                 {
                     int r = Random.Range(-2, 4);
 
+                    int mounts = Mathf.FloorToInt(
+                        Mathf.PerlinNoise((x + position.x + World.Seed) / 128f, (z + position.z + World.Seed) / 128f) * 50f                        
+                        + Mathf.PerlinNoise((x + position.x + World.Seed + 54) / 64f, (z + position.z + World.Seed + 54) / 64f) * 12f
+                        + (Mathf.PerlinNoise((x + position.x + World.Seed + 586) / 512f, (z + position.z + World.Seed + 586) / 512f) * 10f)
+                        * (Mathf.PerlinNoise((x + position.x + World.Seed + 206) / 64f, (z + position.z + World.Seed + 206) / 64f))+30);
+                    
                     int value = Mathf.FloorToInt(
                         Mathf.PerlinNoise((x + position.x + World.Seed) / 128f, (z + position.z + World.Seed) / 128f) * 32f
                         + Mathf.PerlinNoise((x + position.x + World.Seed + 86) / 64f, (z + position.z + World.Seed + 86) / 64f) * 12f
@@ -42,6 +48,23 @@ public class Chunk
 
                         + 20
                         );
+
+                    float perlin3D = Perlin3D((x + position.x)*0.05f,(y + position.y)*0.045f,(z + position.z)*0.05f);
+                    if (mounts > value && perlin3D >0.5 && value>52){
+                        if ( y + position.y <= mounts-5+r )
+                        {   
+                            blocks[index] = Block.Stone;
+                        }
+                        if ( y + position.y > mounts-5 + r/2 && y + position.y < mounts )
+                        {
+                            blocks[index] = Block.Dirt;
+                        }
+                        if ( y + position.y == mounts)
+                        {
+                            blocks[index] = Block.Grass;
+                        }
+                    }
+                        
 
                     //Generate blocks
                     if (y + position.y > value)
@@ -59,8 +82,6 @@ public class Chunk
                             continue;
                         }
                     }
-
-
 
                     if (value == y + position.y && y + position.y > 50 && blocks[index] == Block.Air)
                         blocks[index] = Block.Grass;
@@ -113,5 +134,21 @@ public class Chunk
     bool IsPointInChunk(int x, int y, int z)
     {
         return x >= 0 && y >= 0 && z >= 0 && x < Chunk.size.x && y < Chunk.size.y && z < Chunk.size.z;
+    }
+
+    //3D Perlin Noise
+    public static float Perlin3D(float x, float y, float z){
+        
+        float ab = Mathf.PerlinNoise(x,y);
+        float bc = Mathf.PerlinNoise(y,z);
+        float ac = Mathf.PerlinNoise(x,z);
+        
+        float ba = Mathf.PerlinNoise(y,x);
+        float cb = Mathf.PerlinNoise(z,y);
+        float ca = Mathf.PerlinNoise(z,x);
+
+        float abc = ab + bc + ac + ba + cb + ca;
+        return abc / 6f;
+
     }
 }

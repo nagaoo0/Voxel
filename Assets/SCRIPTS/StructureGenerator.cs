@@ -7,12 +7,12 @@ public class StructureGenerator
 
     public static void GenerateRock(Vector3Int pos, int x, int y, int z, Block[] blocks)
     {
-
-        for (int i = 0; i < 3; i++)
+        int r = Mathf.FloorToInt(Random.Range(1,4));
+        for (int i = 0; i < r; i++)
         {
-            for (int j = 0; j < 3; j++)
+            for (int j = 0; j < r; j++)
             {
-                for (int k =0; k<3; k++){
+                for (int k =0; k<r; k++){
                 if (IsPointInBounds(x + i, y-k, z + j))
                 {
                     blocks[((x + i) * Chunk.size.y * Chunk.size.z + (y-k) * Chunk.size.z + (z + j))] = Block.Stone;
