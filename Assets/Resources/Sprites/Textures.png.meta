@@ -1,17 +1,51 @@
 fileFormatVersion: 2
 guid: 091c2c0dd4930124b8e7bcdd9a973d3d
 TextureImporter:
-  fileIDToRecycleName:
-    21300000: stone
-    21300002: dirt
-    21300004: grassSide
-    21300006: grassTop
-    21300008: default
-    21300010: grassSideZ
-    21300012: water
-    21300014: sand
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: stone
+  - first:
+      213: 21300002
+    second: dirt
+  - first:
+      213: 21300004
+    second: grassSide
+  - first:
+      213: 21300006
+    second: grassTop
+  - first:
+      213: 21300008
+    second: default
+  - first:
+      213: 21300010
+    second: grassSideZ
+  - first:
+      213: 21300012
+    second: water
+  - first:
+      213: 21300014
+    second: sand
+  - first:
+      213: 5330115859703008789
+    second: grassTop2
+  - first:
+      213: -2113888904849945727
+    second: Leaves1
+  - first:
+      213: -8312414268230663183
+    second: Leaves2
+  - first:
+      213: -5046507007345898252
+    second: Leaves3
+  - first:
+      213: -6222168496717222301
+    second: Log
+  - first:
+      213: 352130893065196060
+    second: LogTop
   externalObjects: {}
-  serializedVersion: 7
+  serializedVersion: 10
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -81,7 +115,7 @@ TextureImporter:
     buildTarget: Standalone
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 4
+    textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -92,7 +126,7 @@ TextureImporter:
     buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 4
+    textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
@@ -118,6 +152,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 935eb1d98ecbfbb4e8807fe4e3ff2d72
+      internalID: 21300000
       vertices: []
       indices: 
       edges: []
@@ -138,6 +173,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 6c97788b69ef5c9489bfb96850661108
+      internalID: 21300002
       vertices: []
       indices: 
       edges: []
@@ -158,6 +194,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 9a104afde759e50489d32d1aaf079d99
+      internalID: 21300004
       vertices: []
       indices: 
       edges: []
@@ -178,6 +215,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 7ecbb59916c040b41a6aafe01e39e4e6
+      internalID: 21300006
       vertices: []
       indices: 
       edges: []
@@ -198,6 +236,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 87adc881391e10e4080bddba02acdeee
+      internalID: 21300008
       vertices: []
       indices: 
       edges: []
@@ -218,6 +257,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: e63e51bb71ff6c14fb740c00dc8a92bc
+      internalID: 21300010
       vertices: []
       indices: 
       edges: []
@@ -238,6 +278,7 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: f1c27fe81e4360f4f85a6f1a43063983
+      internalID: 21300012
       vertices: []
       indices: 
       edges: []
@@ -251,13 +292,140 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
       spriteID: 4d9697e82f2146e4ba7d0d3b0ac7f5bd
+      internalID: 21300014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: grassTop2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 112
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 82d153200b7227442bddc4051fd9263b
+      internalID: 5330115859703008789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Leaves1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 80
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c53cfbad58f5f7243be0730e9b7b51a8
+      internalID: -2113888904849945727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Leaves2
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 80
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8279bf7d8ab5cb04ba5cfaacb817c8a2
+      internalID: -8312414268230663183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Leaves3
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 80
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e2ffc3a356b7964798d854b8e573558
+      internalID: -5046507007345898252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Log
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 80
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4df2ce14d97ca8f4eb510d5c3c6dad18
+      internalID: -6222168496717222301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LogTop
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 80
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f54d5d3a1e51e6246ab9c1c469735807
+      internalID: 352130893065196060
       vertices: []
       indices: 
       edges: []
@@ -266,10 +434,12 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 138ed2d125db2854fba8dce1a5acfaf4
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
+    secondaryTextures: []
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
