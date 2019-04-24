@@ -2,89 +2,76 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Chunk
-{
-    public static Vector3Int size = new Vector3Int(16, 16, 16);
+public class Chunk {
+    public static Vector3Int size = new Vector3Int (16, 16, 16);
     public Mesh mesh;
     public Vector3Int position;
     public bool ready = false;
 
     Block[] blocks;
 
-    public Chunk(Vector3Int pos)
-    {
+    public Chunk (Vector3Int pos) {
 
         position = pos;
 
     }
 
-    public void GenerateBlockArray()
-    {
+    public void GenerateBlockArray () {
 
         blocks = new Block[size.x * size.y * size.z];
         int index = 0;
 
-        for (int x = 0; x < size.x; x++)
-        {
-            for (int y = 0; y < size.y; y++)
-            {
-                for (int z = 0; z < size.z; z++)
-                {
-                    int r = Random.Range(-2, 4);
+        for (int x = 0; x < size.x; x++) {
+            for (int y = 0; y < size.y; y++) {
+                for (int z = 0; z < size.z; z++) {
+                    int r = Random.Range (-2, 4);
 
-                    int mounts = Mathf.FloorToInt(
-                        Mathf.PerlinNoise((x + position.x + World.Seed) / 128f, (z + position.z + World.Seed) / 128f) * 80f                        
-                        + Mathf.PerlinNoise((x + position.x + World.Seed + 54) / 64f, (z + position.z + World.Seed + 54) / 64f) * 12f
-                        + (Mathf.PerlinNoise((x + position.x + World.Seed + 586) / 512f, (z + position.z + World.Seed + 586) / 512f) * 10f)
-                        * (Mathf.PerlinNoise((x + position.x + World.Seed + 206) / 64f, (z + position.z + World.Seed + 206) / 64f)));
-                    
-                    int value = Mathf.FloorToInt(
-                        Mathf.PerlinNoise((x + position.x + World.Seed) / 128f, (z + position.z + World.Seed) / 128f) * 36f
-                        + Mathf.PerlinNoise((x + position.x + World.Seed + 86) / 64f, (z + position.z + World.Seed + 86) / 64f) * 12f
-                        + Mathf.PerlinNoise((x + position.x + World.Seed - 600) / 32f, (z + position.z + World.Seed - 600) / 32f) * 10f
-                        + (Mathf.PerlinNoise((x + position.x + World.Seed + 5) / 512f, (z + position.z + World.Seed + 5) / 512f) * 40f)
-                        * (Mathf.PerlinNoise((x + position.x + World.Seed + 200) / 124f, (z + position.z + World.Seed + 200) / 124f)
-                        + (Mathf.PerlinNoise((x + position.x + World.Seed - 100) / 200f, (z + position.z + World.Seed - 100) / 200f) * 5f) / 10)
+                    int mounts = Mathf.FloorToInt (
+                        Mathf.PerlinNoise ((x + position.x + World.Seed) / 128f, (z + position.z + World.Seed) / 128f) * 80f +
+                        Mathf.PerlinNoise ((x + position.x + World.Seed + 54) / 64f, (z + position.z + World.Seed + 54) / 64f) * 12f +
+                        (Mathf.PerlinNoise ((x + position.x + World.Seed + 586) / 512f, (z + position.z + World.Seed + 586) / 512f) * 10f) *
+                        (Mathf.PerlinNoise ((x + position.x + World.Seed + 206) / 64f, (z + position.z + World.Seed + 206) / 64f)));
 
-                        + 16
-                        );
+                    int value = Mathf.FloorToInt (
+                        Mathf.PerlinNoise ((x + position.x + World.Seed) / 128f, (z + position.z + World.Seed) / 128f) * 36f +
+                        Mathf.PerlinNoise ((x + position.x + World.Seed + 86) / 64f, (z + position.z + World.Seed + 86) / 64f) * 12f +
+                        Mathf.PerlinNoise ((x + position.x + World.Seed - 600) / 32f, (z + position.z + World.Seed - 600) / 32f) * 10f +
+                        (Mathf.PerlinNoise ((x + position.x + World.Seed + 5) / 512f, (z + position.z + World.Seed + 5) / 512f) * 40f) *
+                        (Mathf.PerlinNoise ((x + position.x + World.Seed + 200) / 124f, (z + position.z + World.Seed + 200) / 124f) +
+                            (Mathf.PerlinNoise ((x + position.x + World.Seed - 100) / 200f, (z + position.z + World.Seed - 100) / 200f) * 5f) / 10)
 
-                    float perlin3D = Perlin3D((x + position.x)*0.05f,(y + position.y)*0.045f,(z + position.z)*0.05f);
-                    if (mounts > value && perlin3D >0.5 && value>52){
-                        if ( y + position.y <= mounts-5+r )
-                        {   
+                        +
+                        16
+                    );
+
+                    float perlin3D = Perlin3D ((x + position.x) * 0.05f, (y + position.y) * 0.045f, (z + position.z) * 0.05f);
+                    if (mounts > value && perlin3D > 0.5 && value > 52) {
+                        if (y + position.y <= mounts - 5 + r) {
                             blocks[index] = Block.Stone;
                         }
-                        if ( y + position.y > mounts-5 + r/2 && y + position.y < mounts )
-                        {
+                        if (y + position.y > mounts - 5 + r / 2 && y + position.y < mounts) {
                             blocks[index] = Block.Dirt;
                         }
-                        if ( y + position.y == mounts)
-                        {
+                        if (y + position.y == mounts) {
                             blocks[index] = Block.Grass;
                         }
                     }
-                        
 
                     //Generate blocks
-                    if (y + position.y > value)
-                    {
-                        if (y + position.y == value + 1 && value > 52 && value < 60 && Random.Range(0, 350) == 1)
-                        {
-                            StructureGenerator.GenerateRock(position, x, y, z, blocks);
-                        }
-                        else
+                    if (y + position.y > value) {
+                        if (y + position.y == value + 1 && value > 52 && value < 60 && Random.Range (0, 350) == 1) {
+                            StructureGenerator.GenerateRock (position, x, y, z, blocks);
+                        } else
                         if (y + position.y < 50 && blocks[index] == Block.Air)
                             blocks[index] = Block.Water;
-                        else
-                        {
+                        else {
                             index++;
                             continue;
                         }
                     }
 
-                    if(value>54 && value>mounts && value == y + position.y  && Random.Range(0, 300) == 1 && blocks[index] == Block.Air){
-                        StructureGenerator.GenerateTree(position, x,y,z,blocks);
+                    if (value > 54 && value > mounts && value == y + position.y && Random.Range (0, 300) == 1 && blocks[index] == Block.Air) {
+                        StructureGenerator.GenerateTree (position, x, y, z, blocks);
                     }
 
                     if (value == y + position.y && y + position.y > 50 && blocks[index] == Block.Air)
@@ -100,56 +87,96 @@ public class Chunk
                         blocks[index] = Block.Stone;
                     index++;
 
-
                 }
             }
         }
 
-        StructureGenerator.GetWaitingBlocks(position, blocks);
+        StructureGenerator.GetWaitingBlocks (position, blocks);
 
     }
 
-    public IEnumerator GenerateMesh()
-    {
+    public IEnumerator GenerateMesh () {
 
-        MeshBuilder builder = new MeshBuilder(position, blocks);
-        builder.Start();
+        MeshBuilder builder = new MeshBuilder (position, blocks);
+        builder.Start ();
 
-        yield return new WaitUntil(() => builder.Update());
+        yield return new WaitUntil (() => builder.Update ());
 
-        mesh = builder.GetMesh(ref mesh);
-        MeshColliderRegion.AddMeshCollider(this, mesh);
+        mesh = builder.GetMesh (ref mesh);
+        MeshColliderRegion.AddMeshCollider (this, mesh);
 
         ready = true;
         builder = null;
+
+        //Debug.Log ("generated mesh at : " + position);
     }
 
-    public Block GetBlockAt(int x, int y, int z)
-    {
+    public Block GetBlockAt (int x, int y, int z) {
         x -= position.x;
         y -= position.y;
         z -= position.z;
 
-        if (IsPointInChunk(x, y, z))
+        if (IsPointInChunk (x, y, z))
             return blocks[x * Chunk.size.y * Chunk.size.z + y * Chunk.size.z + z];
         return Block.Air;
     }
 
-    bool IsPointInChunk(int x, int y, int z)
-    {
+    public bool SetBlockAt (Vector3 point, Vector3 normal, Block block, bool setBlockMode) {
+
+        if (setBlockMode == false) {
+            int x = Mathf.FloorToInt (point.x) - position.x;
+            int y = Mathf.FloorToInt (point.y) - position.y;
+            int z = Mathf.FloorToInt (point.z) - position.z;
+
+            if (normal.y > 0.5) y -= 1;
+            if (normal.x > 0.5) x -= 1;
+            if (normal.z > 0.5) z -= 1;
+
+            if (IsPointInChunk (x, y, z)) {
+                blocks[x * Chunk.size.y * Chunk.size.z + y * Chunk.size.z + z] = Block.Air;
+                Chunk chunk = this;
+                //Debug.Log ("changed block");
+                ready = false;
+                World.instance.StartCoroutine (chunk.GenerateMesh ());
+                return true;
+            }
+        }
+        if (setBlockMode == true) {
+            int x = Mathf.FloorToInt (point.x) - position.x;
+            int y = Mathf.FloorToInt (point.y) - position.y;
+            int z = Mathf.FloorToInt (point.z) - position.z;
+
+            if (normal.y < -0.5) y -= 1;
+            if (normal.x < -0.5) x -= 1;
+            if (normal.z < -0.5) z -= 1;
+
+
+            if (IsPointInChunk (x, y, z)) {
+                blocks[x * Chunk.size.y * Chunk.size.z + y * Chunk.size.z + z] = block;
+                Chunk chunk = this;
+                //Debug.Log ("changed block");
+                ready = false;
+                World.instance.StartCoroutine (chunk.GenerateMesh ());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool IsPointInChunk (int x, int y, int z) {
         return x >= 0 && y >= 0 && z >= 0 && x < Chunk.size.x && y < Chunk.size.y && z < Chunk.size.z;
     }
 
     //3D Perlin Noise
-    public static float Perlin3D(float x, float y, float z){
-        
-        float ab = Mathf.PerlinNoise(x,y);
-        float bc = Mathf.PerlinNoise(y,z);
-        float ac = Mathf.PerlinNoise(x,z);
-        
-        float ba = Mathf.PerlinNoise(y,x);
-        float cb = Mathf.PerlinNoise(z,y);
-        float ca = Mathf.PerlinNoise(z,x);
+    public static float Perlin3D (float x, float y, float z) {
+
+        float ab = Mathf.PerlinNoise (x, y);
+        float bc = Mathf.PerlinNoise (y, z);
+        float ac = Mathf.PerlinNoise (x, z);
+
+        float ba = Mathf.PerlinNoise (y, x);
+        float cb = Mathf.PerlinNoise (z, y);
+        float ca = Mathf.PerlinNoise (z, x);
 
         float abc = ab + bc + ac + ba + cb + ca;
         return abc / 6f;

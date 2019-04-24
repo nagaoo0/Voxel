@@ -61,6 +61,7 @@
      <Compile Include="Assets\SCRIPTS\Misc\ThreadedProcess.cs" />
      <Compile Include="Assets\SCRIPTS\Misc\Vector3Int.cs" />
      <Compile Include="Assets\SCRIPTS\Player\PlayerController.cs" />
+     <Compile Include="Assets\SCRIPTS\Player\PlayerInteraction.cs" />
      <Compile Include="Assets\SCRIPTS\Terrain\Block.cs" />
      <Compile Include="Assets\SCRIPTS\Terrain\Chunk.cs" />
      <Compile Include="Assets\SCRIPTS\Terrain\MeshColliderRegion.cs" />
@@ -287,9 +288,6 @@
  </Reference>
  <Reference Include="Unity.Locator">
  <HintPath>D:/Logiciel/Unity HUB/2019.1.0f2/Editor/Data/Managed/Unity.Locator.dll</HintPath>
- </Reference>
- <Reference Include="Assembly-CSharp-firstpass">
- <HintPath>D:/repos/Voxel/Library/ScriptAssemblies/Assembly-CSharp-firstpass.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Logiciel/Unity HUB/2019.1.0f2/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8e6292b2c06870d4495f009f912b9600, type: 3}
-  m_Name: FirstPersonCharacter Profile
+  m_Name: Character_PostProcessing
   m_EditorClassIdentifier: 
   settings:
   - {fileID: -4429455297847276224}
@@ -154,8 +154,8 @@ MonoBehaviour:
     overrideState: 1
     value: 1
   shutterAngle:
-    overrideState: 1
-    value: 202
+    overrideState: 0
+    value: 99
   sampleCount:
     overrideState: 0
     value: 4

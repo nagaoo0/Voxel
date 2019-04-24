@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
-{
+public class PlayerController : MonoBehaviour {
     public float moveSpeed = 6;
     public float jumpSpeed = 8;
     public float gravity = 20;
@@ -15,70 +14,64 @@ public class PlayerController : MonoBehaviour
     public float sensitivity = 4;
     Camera cam;
 
+    public PlayerInteraction interaction = new PlayerInteraction ();
+
     public bool canInteract = true;
 
-    void Start()
-    {
+    void Start () {
         cam = Camera.main;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    void Update()
-    {
-        movePlayer();
-        mouseLook();
+    void Update () {
+        movePlayer ();
+        mouseLook ();
 
-        if (canInteract)
-        {
+        if (canInteract) {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
 
             //RAYCAST BLOCK INTERACTION HERE 
+            //if (Input.GetMouseButtonDown(0)){
+            interaction.InteractWithBlocks (cam.transform);
+            //}
 
-        }
-        else
-        {
+        } else {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
     }
 
-    void movePlayer()
-    {
-        CharacterController character = GetComponent<CharacterController>();
+    void movePlayer () {
+        CharacterController character = GetComponent<CharacterController> ();
 
         //jump
-        if (character.isGrounded)
-        {
-            moveDir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-            moveDir = transform.TransformDirection(moveDir);
+        if (character.isGrounded) {
+            moveDir = new Vector3 (Input.GetAxis ("Horizontal"), 0, Input.GetAxis ("Vertical"));
+            moveDir = transform.TransformDirection (moveDir);
             moveDir *= moveSpeed;
 
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
+            if (Input.GetKeyDown (KeyCode.Space)) {
                 moveDir.y += jumpSpeed;
             }
         }
 
         moveDir.y -= gravity * Time.deltaTime;
-        character.Move(moveDir * Time.deltaTime);
+        character.Move (moveDir * Time.deltaTime);
     }
 
-    void mouseLook()
-    {
-        yRot = -Input.GetAxis("Mouse Y") * sensitivity;
-        xRot = Input.GetAxis("Mouse X") * sensitivity;
+    void mouseLook () {
+        yRot = -Input.GetAxis ("Mouse Y") * sensitivity;
+        xRot = Input.GetAxis ("Mouse X") * sensitivity;
 
         yRotation += yRot;
-        yRotation = Mathf.Clamp(yRotation, -80, 80);
+        yRotation = Mathf.Clamp (yRotation, -80, 80);
 
-        if (xRot != 0)
-        {
-            transform.eulerAngles += new Vector3(0, xRot, 0);
+        if (xRot != 0) {
+            transform.eulerAngles += new Vector3 (0, xRot, 0);
         }
-        if (xRot != 0)
-        {
-            cam.transform.eulerAngles = new Vector3(yRotation, transform.eulerAngles.y, 0);
+        if (xRot != 0) {
+            cam.transform.eulerAngles = new Vector3 (yRotation, transform.eulerAngles.y, 0);
         }
 
     }
