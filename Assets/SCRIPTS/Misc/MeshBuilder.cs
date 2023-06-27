@@ -45,13 +45,17 @@ public class MeshBuilder : ThreadedProcess {
             for (int y = 0; y < Chunk.BlockPerChunk; y++) {
                 for (int z = 0; z < Chunk.BlockPerChunk; z++) {
 
+                    float ox = x*offset;
+                    float oy = y*offset;
+                    float oz = z*offset;
+
                     if (blocks[index].IsTransparent ()) {
                         faces[index] = 0;
                         index++;
                         continue;
                     }
 
-                    //check Z
+                    //check oz
                     if (z > 0 && blocks[index - 1] == Block.Air) {
                         faces[index] |= (byte) Direction.South;
                         sizeEstimate += 4;
@@ -62,17 +66,17 @@ public class MeshBuilder : ThreadedProcess {
                         sizeEstimate += 4;
                     }
 
-                    if (z == 0 && (exists[2] == false || neighbors[2].GetBlockAt (position.x + x, position.y + y, position.z + z - 1) == Block.Air)) {
+                    if (z == 0 && (exists[2] == false || neighbors[2].GetBlockAt (position.x + ox, position.y + oy, position.z + oz - 1) == Block.Air)) {
                         faces[index] |= (byte) Direction.South;
                         sizeEstimate += 4;
                     }
 
-                    if (z == Chunk.BlockPerChunk - 1 && (exists[0] == false || (neighbors[0].GetBlockAt (position.x + x, position.y + y, position.z + z + 1) == Block.Air))) {
+                    if (z == Chunk.BlockPerChunk - 1 && (exists[0] == false || (neighbors[0].GetBlockAt (position.x + ox, position.y + oy, position.z + oz + 1) == Block.Air))) {
                         faces[index] |= (byte) Direction.North;
                         sizeEstimate += 4;
                     }
 
-                    //Check X
+                    //Check ox
                     if (x > 0 && blocks[index - Chunk.BlockPerChunk * Chunk.BlockPerChunk] == Block.Air) {
                         faces[index] |= (byte) Direction.West;
                         sizeEstimate += 4;
@@ -83,17 +87,17 @@ public class MeshBuilder : ThreadedProcess {
                         sizeEstimate += 4;
                     }
 
-                    if (x == 0 && (exists[3] == false || neighbors[3].GetBlockAt (position.x + x - 1, position.y + y, position.z + z) == Block.Air)) {
+                    if (x == 0 && (exists[3] == false || neighbors[3].GetBlockAt (position.x + ox - 1, position.y + oy, position.z + oz) == Block.Air)) {
                         faces[index] |= (byte) Direction.West;
                         sizeEstimate += 4;
                     }
 
-                    if (x == Chunk.BlockPerChunk - 1 && (exists[1] == false || neighbors[1].GetBlockAt (position.x + x + 1, position.y + y, position.z + z) == Block.Air)) {
+                    if (x == Chunk.BlockPerChunk - 1 && (exists[1] == false || neighbors[1].GetBlockAt (position.x + ox + 1, position.y + oy, position.z + oz) == Block.Air)) {
                         faces[index] |= (byte) Direction.East;
                         sizeEstimate += 4;
                     }
 
-                    //Check Y
+                    //Check oy
 
                     if (y > 0 && blocks[index - Chunk.BlockPerChunk] == Block.Air) {
                         faces[index] |= (byte) Direction.Down;
@@ -105,12 +109,12 @@ public class MeshBuilder : ThreadedProcess {
                         sizeEstimate += 4;
                     }
 
-                    if (y == 0 && (exists[5] == false || neighbors[5].GetBlockAt (position.x + x, position.y + y - 1, position.z + z) == Block.Air)) {
+                    if (y == 0 && (exists[5] == false || neighbors[5].GetBlockAt (position.x + ox, position.y + oy - 1, position.z + oz) == Block.Air)) {
                         faces[index] |= (byte) Direction.Down;
                         sizeEstimate += 4;
                     }
 
-                    if (y == Chunk.BlockPerChunk - 1 && (exists[4] == false || neighbors[4].GetBlockAt (position.x + x, position.y + y + 1, position.z + z) == Block.Air)) {
+                    if (y == Chunk.BlockPerChunk - 1 && (exists[4] == false || neighbors[4].GetBlockAt (position.x + ox, position.y + oy + 1, position.z + oz) == Block.Air)) {
                         faces[index] |= (byte) Direction.Up;
                         sizeEstimate += 4;
                     }

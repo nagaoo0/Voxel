@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour {
     public float sensitivity = 4;
     Camera cam;
 
-    public VPlayerInteraction interaction = new VPlayerInteraction ();
+    public VPlayerInteraction interaction;
 
     public bool canInteract = true;
 

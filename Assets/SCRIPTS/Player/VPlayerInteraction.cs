@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VPlayerInteraction {
+public class VPlayerInteraction : MonoBehaviour{
 
     public void InteractWithBlocks (Transform cam) {
 
@@ -29,7 +29,7 @@ public class VPlayerInteraction {
             ray.origin = ray.GetPoint (1.0f);
 
             if (Physics.Raycast (ray, out hitData)) {
-                //Debug.Log (hitData.point + ", " + hitData.normal + ", ");
+                Debug.Log (hitData.point + ", " + hitData.normal + ", ");
 
                 Chunk chunk;
                 if(World.instance.GetChunkAtInteract(hitData.point,hitData.normal,true, out chunk)){

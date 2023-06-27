@@ -5,7 +5,10 @@ using UnityEngine;
 public class Chunk {
     public static Vector3Int size = new Vector3Int (8, 8, 8);
     public static int BlockPerChunk = 32;
-    float offset = (float)size.x/(float)BlockPerChunk;
+
+    public static float offset = (float)size.x/(float)BlockPerChunk;
+
+    public static float waterLevel = 44*offset;
     public Mesh mesh;
     public Vector3Int position;
     public bool ready = false;
@@ -26,8 +29,8 @@ public class Chunk {
         for (int x = 0; x < BlockPerChunk; x++) {
             for (int y = 0; y < BlockPerChunk; y++) {
                 for (int z = 0; z < BlockPerChunk; z++) {
-                    int r = Random.Range (-2, 4);
-                    r = 0;
+                    float r = Random.Range (-2*offset, 1*offset);
+                    //r = 0;
 
                     //if (index > 64){continue;}
                     float ox = x*offset;
@@ -46,11 +49,10 @@ public class Chunk {
                         (Mathf.PerlinNoise ((ox + position.x + World.instance.Seed + 200) / 124f, (oz + position.z + World.instance.Seed + 200) / 124f) +
                             (Mathf.PerlinNoise ((ox + position.x + World.instance.Seed - 100) / 200f, (oz + position.z + World.instance.Seed - 100) / 200f) * 5f) / 10)
 
-                        +
-                        16
+                        -16
                     ;
 
-           /*          float perlin3D = Perlin3D ((ox + position.x) * 0.05f, (oy + position.y) * 0.045f, (oz + position.z) * 0.05f);
+                    float perlin3D = Perlin3D ((ox + position.x) * 0.05f, (oy + position.y) * 0.045f, (oz + position.z) * 0.05f);
                     if (mounts > value && perlin3D > 0.5 && value > 52) {
                         if (oy + position.y <= mounts - 5 + r) {
                             blocks[index] = Block.Stone;
@@ -61,10 +63,10 @@ public class Chunk {
                         if (oy + position.y == mounts) {
                             blocks[index] = Block.Stone;
                         }
-                    } */
+                    }
 
                     //Generate blocks
-               /*      if (oy + position.y > value) {
+                    if (oy + position.y > value) {
                         if (oy + position.y == value + offset && value > 52 && value < 60 && Random.Range (0, 350) == 1) {
                             StructureGenerator.GenerateRock (position, x, y, z, blocks);
                         } else
@@ -74,24 +76,26 @@ public class Chunk {
                             index++;
                             continue;
                         }
-                    } */
+                    }
 
-                    /* if (value > 54 && value > mounts && value == y + position.y && Random.Range (0, 300) == 1 && blocks[index] == Block.Air) {
+                    if (value > 54 && value > mounts && value == y + position.y && Random.Range (0, 300) == 1 && blocks[index] == Block.Air) {
                         StructureGenerator.GenerateTree (position, x, y, z, blocks);
-                    } */
-/* 
-                    if (value == y + position.y && oy + position.y > 50 && blocks[index] == Block.Air)
-                        blocks[index] = Block.Grass;
+                    }
 
-                    if (value >= (oy + position.y) && oy + position.y <= 50 && value - 4 + r / 2 < (oy + position.y) && value < 53 && blocks[index] == Block.Air)
-                        blocks[index] = Block.Sand;
-
-                    else if (value > (oy + position.y) && value - 8 + r < (oy + position.y) && blocks[index] == Block.Air)
-                        blocks[index] = Block.Dirt;
-
-                    else  */
                     if (value - 6*offset + r >= (oy + position.y) && blocks[index] == Block.Air)
                         blocks[index] = Block.Stone;
+
+                    if (value > (oy + position.y) && value - 6 + r < (oy + position.y) && blocks[index] == Block.Air)
+                        blocks[index] = Block.Dirt;
+
+                    if (value > (oy + position.y) && value - offset < (oy + position.y) && oy + position.y >= waterLevel)
+                        blocks[index] = Block.Grass;
+
+                    if ((oy + position.y) > value - (Mathf.Clamp(waterLevel-value+offset*4,0,4) -Mathf.Abs(r)) && (oy + position.y) <= value )
+                        blocks[index] = Block.Sand;   
+
+                    if (value <= waterLevel && waterLevel > (oy + position.y) && (oy + position.y) > value - (waterLevel-value) && blocks[index] == Block.Air) 
+                        blocks[index] = Block.Water;                      
                     index++;
 
                 }
@@ -110,21 +114,23 @@ public class Chunk {
         yield return new WaitUntil (() => builder.Update ());
 
         mesh = builder.GetMesh (ref mesh);
-        MeshColliderRegion.AddMeshCollider (this, mesh);
+        if (mesh.vertexCount > 0)
+            MeshColliderRegion.AddMeshCollider (this, mesh);
+            Debug.Log("generated mesh at : " + position);
 
         ready = true;
         builder = null;
 
-        //Debug.Log ("generated mesh at : " + position);
+        
     }
 
-    public Block GetBlockAt (int x, int y, int z) {
+    public Block GetBlockAt (float x, float y, float z) {
         x -= position.x;
         y -= position.y;
         z -= position.z;
 
         if (IsPointInChunk (x, y, z))
-            return blocks[x * Chunk.BlockPerChunk * Chunk.BlockPerChunk + y * Chunk.BlockPerChunk + z];
+            return blocks[(int)((x/offset) * Chunk.BlockPerChunk * Chunk.BlockPerChunk + (y/offset) * Chunk.BlockPerChunk + (z/offset))];
         return Block.Air;
     }
 
@@ -170,7 +176,7 @@ public class Chunk {
         return false;
     }
 
-    bool IsPointInChunk (int x, int y, int z) {
+    bool IsPointInChunk (float x, float y, float z) {
         return x >= 0 && y >= 0 && z >= 0 && x < Chunk.size.x && y < Chunk.size.y && z < Chunk.size.z;
     }
 

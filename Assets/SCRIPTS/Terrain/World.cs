@@ -8,6 +8,11 @@ public class World : MonoBehaviour {
     public Texture texture;
     public static World instance;
 
+    public static float maxViewDist = 300;
+    public static Transform chunkloader;
+
+    public static Vector2 viewerPosition;
+
     Dictionary<Vector3Int, Chunk> chunkPosMap;
 
     public int Seed = 42069;
@@ -38,9 +43,9 @@ public class World : MonoBehaviour {
             }
         }
 
-        foreach (Chunk ch in chunkPosMap.Values) {
+        /* foreach (Chunk ch in chunkPosMap.Values) {
             StartCoroutine (ch.GenerateMesh ());
-        }
+        } */
 
     }
 
