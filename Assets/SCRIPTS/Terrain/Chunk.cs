@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Chunk {
-    public static Vector3Int size = new Vector3Int (16, 16, 16);
+    public static Vector3Int size = new Vector3Int (8, 8, 8);
+    public static int BlockPerChunk = 32;
+    float offset = (float)size.x/(float)BlockPerChunk;
     public Mesh mesh;
     public Vector3Int position;
     public bool ready = false;
@@ -18,72 +20,77 @@ public class Chunk {
 
     public void GenerateBlockArray () {
 
-        blocks = new Block[size.x * size.y * size.z];
+        blocks = new Block[BlockPerChunk* BlockPerChunk* BlockPerChunk * 2];
         int index = 0;
 
-        for (int x = 0; x < size.x; x++) {
-            for (int y = 0; y < size.y; y++) {
-                for (int z = 0; z < size.z; z++) {
+        for (int x = 0; x < BlockPerChunk; x++) {
+            for (int y = 0; y < BlockPerChunk; y++) {
+                for (int z = 0; z < BlockPerChunk; z++) {
                     int r = Random.Range (-2, 4);
+                    r = 0;
 
-                    int mounts = Mathf.FloorToInt (
-                        Mathf.PerlinNoise ((x + position.x + World.Seed) / 128f, (z + position.z + World.Seed) / 128f) * 80f +
-                        Mathf.PerlinNoise ((x + position.x + World.Seed + 54) / 64f, (z + position.z + World.Seed + 54) / 64f) * 12f +
-                        (Mathf.PerlinNoise ((x + position.x + World.Seed + 586) / 512f, (z + position.z + World.Seed + 586) / 512f) * 10f) *
-                        (Mathf.PerlinNoise ((x + position.x + World.Seed + 206) / 64f, (z + position.z + World.Seed + 206) / 64f)));
+                    //if (index > 64){continue;}
+                    float ox = x*offset;
+                    float oy = y*offset;
+                    float oz = z*offset;
 
-                    int value = Mathf.FloorToInt (
-                        Mathf.PerlinNoise ((x + position.x + World.Seed) / 128f, (z + position.z + World.Seed) / 128f) * 36f +
-                        Mathf.PerlinNoise ((x + position.x + World.Seed + 86) / 64f, (z + position.z + World.Seed + 86) / 64f) * 12f +
-                        Mathf.PerlinNoise ((x + position.x + World.Seed - 600) / 32f, (z + position.z + World.Seed - 600) / 32f) * 10f +
-                        (Mathf.PerlinNoise ((x + position.x + World.Seed + 5) / 512f, (z + position.z + World.Seed + 5) / 512f) * 40f) *
-                        (Mathf.PerlinNoise ((x + position.x + World.Seed + 200) / 124f, (z + position.z + World.Seed + 200) / 124f) +
-                            (Mathf.PerlinNoise ((x + position.x + World.Seed - 100) / 200f, (z + position.z + World.Seed - 100) / 200f) * 5f) / 10)
+                    float mounts = Mathf.PerlinNoise ((ox + position.x + World.instance.Seed) / 128f, (oz + position.z + World.instance.Seed) / 128f) * 80f +
+                        Mathf.PerlinNoise ((ox + position.x + World.instance.Seed + 54) / 64f, (oz + position.z + World.instance.Seed + 54) / 64f) * 12f +
+                        (Mathf.PerlinNoise ((ox + position.x + World.instance.Seed + 586) / 512f, (oz + position.z + World.instance.Seed + 586) / 512f) * 10f) *
+                        (Mathf.PerlinNoise ((ox + position.x + World.instance.Seed + 206) / 64f, (oz + position.z + World.instance.Seed + 206) / 64f));
+
+                    float value = Mathf.PerlinNoise ((ox + position.x + World.instance.Seed) / 128f, (oz + position.z + World.instance.Seed) / 128f) * 36f +
+                        Mathf.PerlinNoise ((ox + position.x + World.instance.Seed + 86) / 64f, (oz + position.z + World.instance.Seed + 86) / 64f) * 12f +
+                        Mathf.PerlinNoise ((ox + position.x + World.instance.Seed - 600) / 32f, (oz + position.z + World.instance.Seed - 600) / 32f) * 10f +
+                        (Mathf.PerlinNoise ((ox + position.x + World.instance.Seed + 5) / 512f, (oz + position.z + World.instance.Seed + 5) / 512f) * 40f) *
+                        (Mathf.PerlinNoise ((ox + position.x + World.instance.Seed + 200) / 124f, (oz + position.z + World.instance.Seed + 200) / 124f) +
+                            (Mathf.PerlinNoise ((ox + position.x + World.instance.Seed - 100) / 200f, (oz + position.z + World.instance.Seed - 100) / 200f) * 5f) / 10)
 
                         +
                         16
-                    );
+                    ;
 
-                    float perlin3D = Perlin3D ((x + position.x) * 0.05f, (y + position.y) * 0.045f, (z + position.z) * 0.05f);
+           /*          float perlin3D = Perlin3D ((ox + position.x) * 0.05f, (oy + position.y) * 0.045f, (oz + position.z) * 0.05f);
                     if (mounts > value && perlin3D > 0.5 && value > 52) {
-                        if (y + position.y <= mounts - 5 + r) {
+                        if (oy + position.y <= mounts - 5 + r) {
                             blocks[index] = Block.Stone;
                         }
-                        if (y + position.y > mounts - 5 + r / 2 && y + position.y < mounts) {
-                            blocks[index] = Block.Dirt;
+                        if (oy + position.y > mounts - 5 + r / 2 && y + position.y < mounts) {
+                            blocks[index] = Block.Stone;
                         }
-                        if (y + position.y == mounts) {
-                            blocks[index] = Block.Grass;
+                        if (oy + position.y == mounts) {
+                            blocks[index] = Block.Stone;
                         }
-                    }
+                    } */
 
                     //Generate blocks
-                    if (y + position.y > value) {
-                        if (y + position.y == value + 1 && value > 52 && value < 60 && Random.Range (0, 350) == 1) {
+               /*      if (oy + position.y > value) {
+                        if (oy + position.y == value + offset && value > 52 && value < 60 && Random.Range (0, 350) == 1) {
                             StructureGenerator.GenerateRock (position, x, y, z, blocks);
                         } else
-                        if (y + position.y < 50 && blocks[index] == Block.Air)
-                            blocks[index] = Block.Water;
+                        if (oy + position.y < 50 && blocks[index] == Block.Air)
+                            blocks[index] = Block.Air;
                         else {
                             index++;
                             continue;
                         }
-                    }
+                    } */
 
-                    if (value > 54 && value > mounts && value == y + position.y && Random.Range (0, 300) == 1 && blocks[index] == Block.Air) {
+                    /* if (value > 54 && value > mounts && value == y + position.y && Random.Range (0, 300) == 1 && blocks[index] == Block.Air) {
                         StructureGenerator.GenerateTree (position, x, y, z, blocks);
-                    }
-
-                    if (value == y + position.y && y + position.y > 50 && blocks[index] == Block.Air)
+                    } */
+/* 
+                    if (value == y + position.y && oy + position.y > 50 && blocks[index] == Block.Air)
                         blocks[index] = Block.Grass;
 
-                    if (value >= (y + position.y) && y + position.y <= 50 && value - 4 + r / 2 < (y + position.y) && value < 53 && blocks[index] == Block.Air)
+                    if (value >= (oy + position.y) && oy + position.y <= 50 && value - 4 + r / 2 < (oy + position.y) && value < 53 && blocks[index] == Block.Air)
                         blocks[index] = Block.Sand;
 
-                    else if (value > (y + position.y) && value - 8 + r < (y + position.y) && blocks[index] == Block.Air)
+                    else if (value > (oy + position.y) && value - 8 + r < (oy + position.y) && blocks[index] == Block.Air)
                         blocks[index] = Block.Dirt;
 
-                    else if (value - 6 + r >= (y + position.y) && blocks[index] == Block.Air)
+                    else  */
+                    if (value - 6*offset + r >= (oy + position.y) && blocks[index] == Block.Air)
                         blocks[index] = Block.Stone;
                     index++;
 
@@ -117,7 +124,7 @@ public class Chunk {
         z -= position.z;
 
         if (IsPointInChunk (x, y, z))
-            return blocks[x * Chunk.size.y * Chunk.size.z + y * Chunk.size.z + z];
+            return blocks[x * Chunk.BlockPerChunk * Chunk.BlockPerChunk + y * Chunk.BlockPerChunk + z];
         return Block.Air;
     }
 
@@ -133,7 +140,7 @@ public class Chunk {
             if (normal.z > 0.5) z -= 1;
 
             if (IsPointInChunk (x, y, z)) {
-                blocks[x * Chunk.size.y * Chunk.size.z + y * Chunk.size.z + z] = Block.Air;
+                blocks[x * Chunk.BlockPerChunk * Chunk.BlockPerChunk + y * Chunk.BlockPerChunk + z] = Block.Air;
                 Chunk chunk = this;
                 //Debug.Log ("changed block");
                 ready = false;
@@ -152,7 +159,7 @@ public class Chunk {
 
 
             if (IsPointInChunk (x, y, z)) {
-                blocks[x * Chunk.size.y * Chunk.size.z + y * Chunk.size.z + z] = block;
+                blocks[x * Chunk.BlockPerChunk * Chunk.BlockPerChunk + y * Chunk.BlockPerChunk + z] = block;
                 Chunk chunk = this;
                 //Debug.Log ("changed block");
                 ready = false;

@@ -7,10 +7,10 @@ public class World : MonoBehaviour {
     public Material material;
     public Texture texture;
     public static World instance;
-    public static int Seed;
 
     Dictionary<Vector3Int, Chunk> chunkPosMap;
 
+    public int Seed = 42069;
     public int radius = 2;
     public int height = 4;
 
@@ -21,14 +21,14 @@ public class World : MonoBehaviour {
         MeshColliderRegion.Initialize ();
 
         instance = this;
-        Seed = Random.Range (8000, 9000);
+        //Seed = Random.Range (8000, 9000);
         Debug.Log ("Seed : " + Seed);
     }
 
     void Start () {
         for (int y = 0; y < height; y++) {
-            for (int x = -radius; x < radius + 1; x++) {
-                for (int z = -radius; z < radius + 1; z++) {
+            for (int x = 0; x < radius; x++) {
+                for (int z = 0; z < radius; z++) {
                     Chunk chunk = new Chunk (new Vector3Int (x * Chunk.size.x, y * Chunk.size.y, z * Chunk.size.z));
                     chunk.GenerateBlockArray ();
 

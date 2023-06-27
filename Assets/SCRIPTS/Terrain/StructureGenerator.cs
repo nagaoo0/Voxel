@@ -16,7 +16,7 @@ public class StructureGenerator
                 {
                     if (IsPointInBounds(x + i, y - k, z + j))
                     {
-                        blocks[((x + i) * Chunk.size.y * Chunk.size.z + (y - k) * Chunk.size.z + (z + j))] = Block.Stone;
+                        blocks[((x + i) * Chunk.BlockPerChunk * Chunk.BlockPerChunk + (y - k) * Chunk.BlockPerChunk + (z + j))] = Block.Stone;
                     }
                     else
                     {
@@ -55,7 +55,7 @@ public class StructureGenerator
                 {
                     if (IsPointInBounds(x + i, y - k + r, z + j))
                     {
-                        blocks[((x + i) * Chunk.size.y * Chunk.size.z + (y - k + r) * Chunk.size.z + (z + j))] = Block.Leaves;
+                        blocks[((x + i) * Chunk.BlockPerChunk * Chunk.BlockPerChunk + (y - k + r) * Chunk.BlockPerChunk + (z + j))] = Block.Leaves;
                     }
                     else
                     {
@@ -96,7 +96,7 @@ public class StructureGenerator
                         }
                         if (IsPointInBounds(x + i + o1, y + j + r + o2, z + k + o3))
                         {
-                            blocks[((x + i + o1) * Chunk.size.y * Chunk.size.z + (y + j + r + o2) * Chunk.size.z + (z + k + o3))] = Block.Leaves;
+                            blocks[((x + i + o1) * Chunk.BlockPerChunk * Chunk.BlockPerChunk + (y + j + r + o2) * Chunk.BlockPerChunk + (z + k + o3))] = Block.Leaves;
                         }
                         else
                         {
@@ -126,7 +126,7 @@ public class StructureGenerator
         {
             if (IsPointInBounds(x, y + j, z))
             {
-                blocks[((x) * Chunk.size.y * Chunk.size.z + (y + j) * Chunk.size.z + (z))] = Block.Log;
+                blocks[((x) * Chunk.BlockPerChunk * Chunk.BlockPerChunk + (y + j) * Chunk.BlockPerChunk + (z))] = Block.Log;
             }
             else
             {
@@ -181,7 +181,7 @@ public class StructureGenerator
 
     static bool IsPointInBounds(int x, int y, int z)
     {
-        return x >= 0 && y >= 0 && z >= 0 && x < Chunk.size.x && y < Chunk.size.y && z < Chunk.size.z;
+        return x >= 0 && y >= 0 && z >= 0 && x < Chunk.BlockPerChunk && y < Chunk.BlockPerChunk && z < Chunk.BlockPerChunk;
     }
 
     static int PositionToIndex(int x, int y, int z)
@@ -192,7 +192,7 @@ public class StructureGenerator
         y -= chunkPos.y;
         z -= chunkPos.z;
 
-        return x * Chunk.size.y * Chunk.size.z + y * Chunk.size.z + z;
+        return x * Chunk.BlockPerChunk * Chunk.BlockPerChunk + y * Chunk.BlockPerChunk + z;
 
     }
 

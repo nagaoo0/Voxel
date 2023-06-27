@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MeshBuilder : ThreadedProcess {
     //0000 0000 faces
-    byte[] faces = new byte[Chunk.size.x * Chunk.size.y * Chunk.size.z];
+    byte[] faces = new byte[Chunk.BlockPerChunk * Chunk.BlockPerChunk * Chunk.BlockPerChunk];
     Vector3[] vertices;
     Vector2[] uvs;
     int[] triangles;
@@ -15,6 +15,8 @@ public class MeshBuilder : ThreadedProcess {
     int sizeEstimate = 0;
     int vertexIndex = 0, trianglesIndex = 0;
     bool isVisible = true;
+    //float offset = Chunk.size.x/Chunk.BlockPerChunk;
+    float offset = (float)Chunk.size.x/(float)Chunk.BlockPerChunk;
 
     public MeshBuilder (Vector3Int pos, Block[] blocks) {
 
@@ -39,9 +41,9 @@ public class MeshBuilder : ThreadedProcess {
         exists[4] = World.instance.GetChunkAt (position.x, position.y + Chunk.size.y, position.z, out neighbors[4]);
         exists[5] = World.instance.GetChunkAt (position.x, position.y - Chunk.size.y, position.z, out neighbors[5]);
 
-        for (int x = 0; x < Chunk.size.x; x++) {
-            for (int y = 0; y < Chunk.size.y; y++) {
-                for (int z = 0; z < Chunk.size.z; z++) {
+        for (int x = 0; x < Chunk.BlockPerChunk; x++) {
+            for (int y = 0; y < Chunk.BlockPerChunk; y++) {
+                for (int z = 0; z < Chunk.BlockPerChunk; z++) {
 
                     if (blocks[index].IsTransparent ()) {
                         faces[index] = 0;
@@ -55,7 +57,7 @@ public class MeshBuilder : ThreadedProcess {
                         sizeEstimate += 4;
                     }
 
-                    if (z < Chunk.size.z - 1 && blocks[index + 1] == Block.Air) {
+                    if (z < Chunk.BlockPerChunk - 1 && blocks[index + 1] == Block.Air) {
                         faces[index] |= (byte) Direction.North;
                         sizeEstimate += 4;
                     }
@@ -65,18 +67,18 @@ public class MeshBuilder : ThreadedProcess {
                         sizeEstimate += 4;
                     }
 
-                    if (z == Chunk.size.z - 1 && (exists[0] == false || (neighbors[0].GetBlockAt (position.x + x, position.y + y, position.z + z + 1) == Block.Air))) {
+                    if (z == Chunk.BlockPerChunk - 1 && (exists[0] == false || (neighbors[0].GetBlockAt (position.x + x, position.y + y, position.z + z + 1) == Block.Air))) {
                         faces[index] |= (byte) Direction.North;
                         sizeEstimate += 4;
                     }
 
                     //Check X
-                    if (x > 0 && blocks[index - Chunk.size.z * Chunk.size.y] == Block.Air) {
+                    if (x > 0 && blocks[index - Chunk.BlockPerChunk * Chunk.BlockPerChunk] == Block.Air) {
                         faces[index] |= (byte) Direction.West;
                         sizeEstimate += 4;
                     }
 
-                    if (x < Chunk.size.x - 1 && blocks[index + Chunk.size.z * Chunk.size.y] == Block.Air) {
+                    if (x < Chunk.BlockPerChunk - 1 && blocks[index + Chunk.BlockPerChunk * Chunk.BlockPerChunk] == Block.Air) {
                         faces[index] |= (byte) Direction.East;
                         sizeEstimate += 4;
                     }
@@ -86,19 +88,19 @@ public class MeshBuilder : ThreadedProcess {
                         sizeEstimate += 4;
                     }
 
-                    if (x == Chunk.size.x - 1 && (exists[1] == false || neighbors[1].GetBlockAt (position.x + x + 1, position.y + y, position.z + z) == Block.Air)) {
+                    if (x == Chunk.BlockPerChunk - 1 && (exists[1] == false || neighbors[1].GetBlockAt (position.x + x + 1, position.y + y, position.z + z) == Block.Air)) {
                         faces[index] |= (byte) Direction.East;
                         sizeEstimate += 4;
                     }
 
                     //Check Y
 
-                    if (y > 0 && blocks[index - Chunk.size.z] == Block.Air) {
+                    if (y > 0 && blocks[index - Chunk.BlockPerChunk] == Block.Air) {
                         faces[index] |= (byte) Direction.Down;
                         sizeEstimate += 4;
                     }
 
-                    if (y < Chunk.size.y - 1 && blocks[index + Chunk.size.z] == Block.Air) {
+                    if (y < Chunk.BlockPerChunk - 1 && blocks[index + Chunk.BlockPerChunk] == Block.Air) {
                         faces[index] |= (byte) Direction.Up;
                         sizeEstimate += 4;
                     }
@@ -108,7 +110,7 @@ public class MeshBuilder : ThreadedProcess {
                         sizeEstimate += 4;
                     }
 
-                    if (y == Chunk.size.y - 1 && (exists[4] == false || neighbors[4].GetBlockAt (position.x + x, position.y + y + 1, position.z + z) == Block.Air)) {
+                    if (y == Chunk.BlockPerChunk - 1 && (exists[4] == false || neighbors[4].GetBlockAt (position.x + x, position.y + y + 1, position.z + z) == Block.Air)) {
                         faces[index] |= (byte) Direction.Up;
                         sizeEstimate += 4;
                     }
@@ -125,20 +127,25 @@ public class MeshBuilder : ThreadedProcess {
         triangles = new int[(int) (sizeEstimate * 1.5f)];
 
         //generate mesh
-        for (int x = 0; x < Chunk.size.x; x++) {
-            for (int y = 0; y < Chunk.size.y; y++) {
-                for (int z = 0; z < Chunk.size.z; z++) {
+        for (int x = 0; x < Chunk.BlockPerChunk; x++) {
+            for (int y = 0; y < Chunk.BlockPerChunk; y++) {
+                for (int z = 0; z < Chunk.BlockPerChunk; z++) {
 
                     if (faces[index] == 0) {
                         index++;
                         continue;
                     }
+                    
+                    float ox = x*offset;
+                    float oy = y*offset;
+                    float oz = z*offset;
+                    
 
                     if ((faces[index] & (byte) Direction.South) != 0) {
-                        vertices[vertexIndex] = new Vector3 (x + position.x, y + position.y, z + position.z);
-                        vertices[vertexIndex + 1] = new Vector3 (x + position.x + 1, y + position.y + 0, z + position.z);
-                        vertices[vertexIndex + 2] = new Vector3 (x + position.x + 0, y + position.y + 1, z + position.z);
-                        vertices[vertexIndex + 3] = new Vector3 (x + position.x + 1, y + position.y + 1, z + position.z);
+                        vertices[vertexIndex] = new Vector3 (ox + position.x, oy + position.y, oz + position.z);
+                        vertices[vertexIndex + 1] = new Vector3 (ox + position.x + offset, oy + position.y + 0, oz + position.z);
+                        vertices[vertexIndex + 2] = new Vector3 (ox + position.x + 0, oy + position.y + offset, oz + position.z);
+                        vertices[vertexIndex + 3] = new Vector3 (ox + position.x + offset, oy + position.y + offset, oz + position.z);
 
                         triangles[trianglesIndex] = vertexIndex + 1;
                         triangles[trianglesIndex + 1] = vertexIndex + 2;
@@ -155,10 +162,10 @@ public class MeshBuilder : ThreadedProcess {
                     }
 
                     if ((faces[index] & (byte) Direction.North) != 0) {
-                        vertices[vertexIndex] = new Vector3 (x + position.x, y + position.y, z + position.z + 1);
-                        vertices[vertexIndex + 1] = new Vector3 (x + position.x + 1, y + position.y + 0, z + position.z + 1);
-                        vertices[vertexIndex + 2] = new Vector3 (x + position.x + 0, y + position.y + 1, z + position.z + 1);
-                        vertices[vertexIndex + 3] = new Vector3 (x + position.x + 1, y + position.y + 1, z + position.z + 1);
+                        vertices[vertexIndex] = new Vector3 (ox + position.x, oy + position.y, oz + position.z + offset);
+                        vertices[vertexIndex + 1] = new Vector3 (ox + position.x + offset, oy + position.y + 0, oz + position.z + offset);
+                        vertices[vertexIndex + 2] = new Vector3 (ox + position.x + 0, oy + position.y + offset, oz + position.z + offset);
+                        vertices[vertexIndex + 3] = new Vector3 (ox + position.x + offset, oy + position.y + offset, oz + position.z + offset);
 
                         triangles[trianglesIndex] = vertexIndex + 1;
                         triangles[trianglesIndex + 1] = vertexIndex + 2;
@@ -175,10 +182,10 @@ public class MeshBuilder : ThreadedProcess {
                     }
 
                     if ((faces[index] & (byte) Direction.East) != 0) {
-                        vertices[vertexIndex + 0] = new Vector3 (x + position.x + 1, y + position.y, z + position.z);
-                        vertices[vertexIndex + 1] = new Vector3 (x + position.x + 1, y + position.y, z + position.z + 1);
-                        vertices[vertexIndex + 2] = new Vector3 (x + position.x + 1, y + position.y + 1, z + position.z);
-                        vertices[vertexIndex + 3] = new Vector3 (x + position.x + 1, y + position.y + 1, z + position.z + 1);
+                        vertices[vertexIndex + 0] = new Vector3 (ox + position.x + offset, oy + position.y, oz + position.z);
+                        vertices[vertexIndex + 1] = new Vector3 (ox + position.x + offset, oy + position.y, oz + position.z + offset);
+                        vertices[vertexIndex + 2] = new Vector3 (ox + position.x + offset, oy + position.y + offset, oz + position.z);
+                        vertices[vertexIndex + 3] = new Vector3 (ox + position.x + offset, oy + position.y + offset, oz + position.z + offset);
 
                         triangles[trianglesIndex + 3] = vertexIndex + 1;
                         triangles[trianglesIndex + 4] = vertexIndex + 2;
@@ -195,10 +202,10 @@ public class MeshBuilder : ThreadedProcess {
                     }
 
                     if ((faces[index] & (byte) Direction.West) != 0) {
-                        vertices[vertexIndex] = new Vector3 (x + position.x, y + position.y, z + position.z);
-                        vertices[vertexIndex + 1] = new Vector3 (x + position.x, y + position.y, z + position.z + 1);
-                        vertices[vertexIndex + 2] = new Vector3 (x + position.x, y + position.y + 1, z + position.z);
-                        vertices[vertexIndex + 3] = new Vector3 (x + position.x, y + position.y + 1, z + position.z + 1);
+                        vertices[vertexIndex] = new Vector3 (ox + position.x, oy + position.y, oz + position.z);
+                        vertices[vertexIndex + 1] = new Vector3 (ox + position.x, oy + position.y, oz + position.z + offset);
+                        vertices[vertexIndex + 2] = new Vector3 (ox + position.x, oy + position.y + offset, oz + position.z);
+                        vertices[vertexIndex + 3] = new Vector3 (ox + position.x, oy + position.y + offset, oz + position.z + offset);
 
                         triangles[trianglesIndex] = vertexIndex + 1;
                         triangles[trianglesIndex + 1] = vertexIndex + 2;
@@ -215,10 +222,10 @@ public class MeshBuilder : ThreadedProcess {
                     }
 
                     if ((faces[index] & (byte) Direction.Up) != 0) {
-                        vertices[vertexIndex] = new Vector3 (x + position.x, y + position.y + 1, z + position.z);
-                        vertices[vertexIndex + 1] = new Vector3 (x + position.x, y + position.y + 1, z + position.z + 1);
-                        vertices[vertexIndex + 2] = new Vector3 (x + position.x + 1, y + position.y + 1, z + position.z);
-                        vertices[vertexIndex + 3] = new Vector3 (x + position.x + 1, y + position.y + 1, z + position.z + 1);
+                        vertices[vertexIndex] = new Vector3 (ox + position.x, oy + position.y + offset, oz + position.z);
+                        vertices[vertexIndex + 1] = new Vector3 (ox + position.x, oy + position.y + offset, oz + position.z + offset);
+                        vertices[vertexIndex + 2] = new Vector3 (ox + position.x + offset, oy + position.y + offset, oz + position.z);
+                        vertices[vertexIndex + 3] = new Vector3 (ox + position.x + offset, oy + position.y + offset, oz + position.z + offset);
 
                         triangles[trianglesIndex] = vertexIndex + 1;
                         triangles[trianglesIndex + 1] = vertexIndex + 2;
@@ -235,10 +242,10 @@ public class MeshBuilder : ThreadedProcess {
                     }
 
                     if ((faces[index] & (byte) Direction.Down) != 0) {
-                        vertices[vertexIndex] = new Vector3 (x + position.x, y + position.y, z + position.z);
-                        vertices[vertexIndex + 1] = new Vector3 (x + position.x, y + position.y, z + position.z + 1);
-                        vertices[vertexIndex + 2] = new Vector3 (x + position.x + 1, y + position.y, z + position.z);
-                        vertices[vertexIndex + 3] = new Vector3 (x + position.x + 1, y + position.y, z + position.z + 1);
+                        vertices[vertexIndex] = new Vector3 (ox + position.x, oy + position.y, oz + position.z);
+                        vertices[vertexIndex + 1] = new Vector3 (ox + position.x, oy + position.y, oz + position.z + offset);
+                        vertices[vertexIndex + 2] = new Vector3 (ox + position.x + offset, oy + position.y, oz + position.z);
+                        vertices[vertexIndex + 3] = new Vector3 (ox + position.x + offset, oy + position.y, oz + position.z + offset);
 
                         triangles[trianglesIndex] = vertexIndex + 1;
                         triangles[trianglesIndex + 1] = vertexIndex + 2;
