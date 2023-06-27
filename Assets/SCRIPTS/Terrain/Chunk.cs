@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Chunk {
     public static Vector3Int size = new Vector3Int (8, 8, 8);
+
+    public bool isVisible= false;
     public static int BlockPerChunk = 32;
 
     public static float offset = (float)size.x/(float)BlockPerChunk;
@@ -18,7 +20,12 @@ public class Chunk {
     public Chunk (Vector3Int pos) {
 
         position = pos;
+        //Debug.Log("Chunk build");
 
+    }
+
+    public void SetVisible(bool visible){
+        isVisible = visible;
     }
 
     public void GenerateBlockArray () {
@@ -32,7 +39,9 @@ public class Chunk {
                     float r = Random.Range (-2*offset, 1*offset);
                     //r = 0;
 
-                    //if (index > 64){continue;}
+                    //if (index > 1){continue;}
+
+
                     float ox = x*offset;
                     float oy = y*offset;
                     float oz = z*offset;
@@ -106,6 +115,15 @@ public class Chunk {
 
     }
 
+    public void UpdateChunk(){
+        Vector3 pos = new Vector3(position.x,position.y,position.z);
+        Vector3 viewer = new Vector3(World.viewerPosition.x,World.viewerPosition.y,World.viewerPosition.z);
+
+        float dist = Vector3.Distance(viewer, pos);
+        if (dist <= World.maxViewDist)
+            isVisible = true;
+    }
+
     public IEnumerator GenerateMesh () {
 
         MeshBuilder builder = new MeshBuilder (position, blocks);
@@ -116,7 +134,7 @@ public class Chunk {
         mesh = builder.GetMesh (ref mesh);
         if (mesh.vertexCount > 0)
             MeshColliderRegion.AddMeshCollider (this, mesh);
-            Debug.Log("generated mesh at : " + position);
+            //Debug.Log("generated mesh at : " + position);
 
         ready = true;
         builder = null;
