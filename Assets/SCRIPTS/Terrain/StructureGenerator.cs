@@ -5,9 +5,10 @@ using UnityEngine;
 public class StructureGenerator
 {
 
-    public static void GenerateRock(Vector3Int pos, int x, int y, int z, Block[] blocks)
+     public static void GenerateRock(Vector3Int pos, float x, float y, float z, Block[] blocks)
     {
-        int r = Mathf.FloorToInt(Random.Range(1, 4));
+        int r = Mathf.FloorToInt(Random.Range(5, 10));
+        r= 5;
         for (int i = 0; i < r; i++)
         {
             for (int j = 0; j < r; j++)
@@ -16,7 +17,7 @@ public class StructureGenerator
                 {
                     if (IsPointInBounds(x + i, y - k, z + j))
                     {
-                        blocks[((x + i) * Chunk.BlockPerChunk * Chunk.BlockPerChunk + (y - k) * Chunk.BlockPerChunk + (z + j))] = Block.Stone;
+                        blocks[(int)((x + i) * Chunk.BlockPerChunk * Chunk.BlockPerChunk + (y - k) * Chunk.BlockPerChunk + (z + j))] = Block.Stone;
                     }
                     else
                     {
@@ -39,10 +40,10 @@ public class StructureGenerator
             }
         }
 
-    }
+    } 
 
 
-    public static void GenerateTree(Vector3Int pos, int x, int y, int z, Block[] blocks)
+    public static void GenerateTree(Vector3Int pos, float x, float y, float z, Block[] blocks)
     {
         int r = Mathf.FloorToInt(Random.Range(6, 10));
 
@@ -55,11 +56,13 @@ public class StructureGenerator
                 {
                     if (IsPointInBounds(x + i, y - k + r, z + j))
                     {
-                        blocks[((x + i) * Chunk.BlockPerChunk * Chunk.BlockPerChunk + (y - k + r) * Chunk.BlockPerChunk + (z + j))] = Block.Leaves;
+                        blocks[(((int)x + i) * Chunk.BlockPerChunk * Chunk.BlockPerChunk + ((int)y - k + r) * Chunk.BlockPerChunk + ((int)z + j))] = Block.Leaves;
                     }
                     else
                     {
-                        Vector3Int neghborChunkPos = World.WorldToChunkCoords(pos.x + i + x, pos.y + y - k + r, pos.z + j + z);
+                        Vector3Int neghborChunkPos = World.WorldToChunkCoords(pos.x + (i + x)*Chunk.offset, pos.y + (y - k + r)*Chunk.offset, pos.z + (j + z)*Chunk.offset);
+                        //Debug.Log((pos.x + i + x) + ";" + (pos.y + y - k + r) + ";" +  (pos.z + j + z));
+
 
                         List<BlockPositions> list;
                         if (WaitingBlocks.TryGetValue(neghborChunkPos, out list))
@@ -96,11 +99,11 @@ public class StructureGenerator
                         }
                         if (IsPointInBounds(x + i + o1, y + j + r + o2, z + k + o3))
                         {
-                            blocks[((x + i + o1) * Chunk.BlockPerChunk * Chunk.BlockPerChunk + (y + j + r + o2) * Chunk.BlockPerChunk + (z + k + o3))] = Block.Leaves;
+                            blocks[(((int)x + i + o1) * Chunk.BlockPerChunk * Chunk.BlockPerChunk + ((int)y + j + r + o2) * Chunk.BlockPerChunk + ((int)z + k + o3))] = Block.Leaves;
                         }
                         else
                         {
-                            Vector3Int neghborChunkPos = World.WorldToChunkCoords(pos.x + x + i + o1, pos.y + y + j + r + o2, pos.z + z + k + o3);
+                            Vector3Int neghborChunkPos = World.WorldToChunkCoords(pos.x + (x + i + o1)*Chunk.offset, pos.y + (y + j + r + o2)*Chunk.offset, pos.z + (z + k + o3)*Chunk.offset);
 
                             List<BlockPositions> list;
                             if (WaitingBlocks.TryGetValue(neghborChunkPos, out list))
@@ -126,11 +129,11 @@ public class StructureGenerator
         {
             if (IsPointInBounds(x, y + j, z))
             {
-                blocks[((x) * Chunk.BlockPerChunk * Chunk.BlockPerChunk + (y + j) * Chunk.BlockPerChunk + (z))] = Block.Log;
+                blocks[(((int)x) * Chunk.BlockPerChunk * Chunk.BlockPerChunk + ((int)y + j) * Chunk.BlockPerChunk + ((int)z))] = Block.Log;
             }
             else
             {
-                Vector3Int neghborChunkPos = World.WorldToChunkCoords(pos.x + x, pos.y + y + j, pos.z + z);
+                Vector3Int neghborChunkPos = World.WorldToChunkCoords(pos.x + x*Chunk.offset, pos.y + y*Chunk.offset + j, pos.z + z*Chunk.offset);
 
                 List<BlockPositions> list;
                 if (WaitingBlocks.TryGetValue(neghborChunkPos, out list))
@@ -146,7 +149,7 @@ public class StructureGenerator
                 }
             }
         }
-
+ 
 
     }
 
@@ -179,12 +182,12 @@ public class StructureGenerator
 
     }
 
-    static bool IsPointInBounds(int x, int y, int z)
+    static bool IsPointInBounds(float x, float y, float z)
     {
         return x >= 0 && y >= 0 && z >= 0 && x < Chunk.BlockPerChunk && y < Chunk.BlockPerChunk && z < Chunk.BlockPerChunk;
     }
 
-    static int PositionToIndex(int x, int y, int z)
+    static int PositionToIndex(float x, float y, float z)
     {
         Vector3Int chunkPos = World.WorldToChunkCoords(x, y, z);
 
@@ -192,7 +195,11 @@ public class StructureGenerator
         y -= chunkPos.y;
         z -= chunkPos.z;
 
-        return x * Chunk.BlockPerChunk * Chunk.BlockPerChunk + y * Chunk.BlockPerChunk + z;
+        /* x = x/Chunk.offset;
+        y = y/Chunk.offset;
+        z = z/Chunk.offset; */
+
+        return (int)(x * Chunk.BlockPerChunk * Chunk.BlockPerChunk + y * Chunk.BlockPerChunk + z);
 
     }
 
