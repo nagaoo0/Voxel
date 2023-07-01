@@ -11,7 +11,7 @@ public class Chunk
 
     public static float offset = (float)size.x / (float)BlockPerChunk;
 
-    public static float waterLevel = 10 * offset;
+    public static float waterLevel = 16 * offset;
     public Mesh mesh;
     public Vector3Int position;
     public bool ready = false;
@@ -62,21 +62,21 @@ public class Chunk
                         (Mathf.PerlinNoise((ox + position.x + World.instance.Seed + 586) / 512f, (oz + position.z + World.instance.Seed + 586) / 512f) * 10f) *
                         (Mathf.PerlinNoise((ox + position.x + World.instance.Seed + 206) / 64f, (oz + position.z + World.instance.Seed + 206) / 64f));
 
-                    float perlin2DValue = Mathf.PerlinNoise((ox + position.x + World.instance.Seed) / 128f, (oz + position.z + World.instance.Seed) / 128f) * 64f/* +
+                    float perlin2DValue = Mathf.PerlinNoise((ox + position.x + World.instance.Seed) / 128f, (oz + position.z + World.instance.Seed) / 128f) * 64f+
                         Mathf.PerlinNoise ((ox + position.x + World.instance.Seed + 86) / 64f, (oz + position.z + World.instance.Seed + 86) / 64f) * 12f +
                         Mathf.PerlinNoise ((ox + position.x + World.instance.Seed - 600) / 32f, (oz + position.z + World.instance.Seed - 600) / 32f) * 10f +
-                        (Mathf.PerlinNoise ((ox + position.x + World.instance.Seed + 5) / 512f, (oz + position.z + World.instance.Seed + 5) / 512f) * 40f) *
+                        (Mathf.PerlinNoise ((ox + position.x + World.instance.Seed + 5) / 512f, (oz + position.z + World.instance.Seed + 5) / 512f) * 20f) *
                         (Mathf.PerlinNoise ((ox + position.x + World.instance.Seed + 200) / 124f, (oz + position.z + World.instance.Seed + 200) / 124f) +
                             (Mathf.PerlinNoise ((ox + position.x + World.instance.Seed - 100) / 200f, (oz + position.z + World.instance.Seed - 100) / 200f) * 5f) / 10)
 
-                        -16 */
+                        
                     ;
 
                     perlin2DValue = Mathf.RoundToInt(perlin2DValue)  * offset +1; //+1 for testing
 
-                    float VegetationMask = Mathf.PerlinNoise((ox + position.x + World.instance.Seed + 500) / 64f, (oz + position.z + World.instance.Seed + 900) / 64f);
+                    float VegetationMask = Mathf.PerlinNoise((ox + position.x + World.instance.Seed + 500) / 128f, (oz + position.z + World.instance.Seed + 900) / 128f);
 
-                    float perlin3D = Perlin3D((ox + position.x) * 0.05f, (oy + position.y) * 0.045f, (oz + position.z) * 0.05f);
+                    float perlin3D = Perlin3D((ox + position.x + World.instance.Seed +46) / 64f, (oy + position.y + World.instance.Seed+841) / 64f, (oz + position.z + World.instance.Seed+452) / 64f);
 
                     if (perlinMask2D > perlin2DValue && perlin3D > 0.5 && perlin2DValue > 52)
                     {
@@ -86,11 +86,11 @@ public class Chunk
                         }
                         if (oy + position.y > perlinMask2D - 5 + r / 2 && y + position.y < perlinMask2D)
                         {
-                            blocks[index] = Block.Stone;
+                            blocks[index] = Block.Dirt;
                         }
-                        if (oy + position.y == perlinMask2D)
+                        if (oy + position.y > perlinMask2D-1 && y + position.y < perlinMask2D)
                         {
-                            blocks[index] = Block.Stone;
+                            blocks[index] = Block.Grass;
                         }
                     }
 
@@ -126,9 +126,9 @@ public class Chunk
                         }
                     } */
 
-                    if (perlin2DValue == (oy + position.y) )/*&& perlin2DValue - 1 < (oy + position.y)  && blocks[index] == Block.Air */
+                    if (perlin2DValue == (oy + position.y) && blocks[index] == Block.Grass)/*&& perlin2DValue - 1 < (oy + position.y)  && blocks[index] == Block.Air */
                     {
-                        int Density = 1;
+                        int Density = 20;
                         if (VegetationMask > 0.5 + r/10){
                             if (Random.Range (0, 1000/Density) == 1 )
                             {
@@ -140,7 +140,16 @@ public class Chunk
                         //Debug.Log("Tree Generated");
                     }
                     
-                    
+                    if(blocks[index] == Block.Stone){
+                        if (perlin2DValue*0.75 + r > (oy + position.y)) {
+                            float cracks = Mathf.Abs(perlin3D*2 - 1);
+                            Debug.Log(cracks);
+                            if (cracks < 0.05)
+                            {
+                                blocks[index] = Block.Air;
+                            }
+                        }
+                    }
                     
                     
                     /// END RULES
