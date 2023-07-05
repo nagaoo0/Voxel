@@ -58,9 +58,9 @@ public class World : MonoBehaviour
                     Chunk chunk = new Chunk(
                         new Vector3Int(x * Chunk.size.x, y * Chunk.size.y, z * Chunk.size.z)
                     );
-                    Debug.Log("Before generate block array");
+                    //Debug.Log("Before generate block array");
                     await chunk.GenerateBlockArray();
-                    Debug.Log("After generate block array");
+                    //Debug.Log("After generate block array");
                     chunkPosMap.Add(chunk.position, chunk);
 
                     StartCoroutine(chunk.GenerateMesh());
@@ -74,6 +74,7 @@ public class World : MonoBehaviour
         }
 
         StartCoroutine(HandleChunkLoading());
+
         //Debug.Log("Start Coroutine Generate Mesh");
     }
 
@@ -239,14 +240,16 @@ public class World : MonoBehaviour
                 //Debug.Log(newChunks[i]);
                 //StartCoroutine(newChunks[i].GenerateMesh());
                 GenerateNewChunks(newChunks[i].position, newChunks[i]);
+                
             }
         }
 
         foreach (Chunk ch in chunkPosMap.Values)
         {
-            if (ch.mesh != null && ch.mesh.vertexCount > 0 && ch.isVisible)
+            if (ch.isVisible)
             {
                 StartCoroutine(ch.GenerateMesh());
+                
             }
         }
     }
@@ -255,7 +258,61 @@ public class World : MonoBehaviour
     {
         chunkPosMap.Add(pos, chunk);
         await chunk.GenerateBlockArray();
-        //StartCoroutine(chunk.GenerateMesh());
+        //await chunk.AsyncMesher();
+        StartCoroutine(chunk.GenerateMesh());
+        //UpdateNeigbours(pos);
+    }
+
+    public void UpdateNeigbours(Vector3Int position)
+    {
+        Chunk[] neighbors = new Chunk[6];
+        bool[] exists = new bool[6];
+
+        exists[0] = World.instance.GetChunkAt(
+            position.x,
+            position.y,
+            position.z + Chunk.size.z,
+            out neighbors[0]
+        );
+        exists[1] = World.instance.GetChunkAt(
+            position.x + Chunk.size.x,
+            position.y,
+            position.z,
+            out neighbors[1]
+        );
+        exists[2] = World.instance.GetChunkAt(
+            position.x,
+            position.y,
+            position.z - Chunk.size.z,
+            out neighbors[2]
+        );
+        exists[3] = World.instance.GetChunkAt(
+            position.x - Chunk.size.x,
+            position.y,
+            position.z,
+            out neighbors[3]
+        );
+
+        exists[4] = World.instance.GetChunkAt(
+            position.x,
+            position.y + Chunk.size.y,
+            position.z,
+            out neighbors[4]
+        );
+        exists[5] = World.instance.GetChunkAt(
+            position.x,
+            position.y - Chunk.size.y,
+            position.z,
+            out neighbors[5]
+        );
+
+        foreach (Chunk n in neighbors)
+        {
+            if (n != null)
+            {
+                StartCoroutine(n.GenerateMesh());     
+            }
+        }
     }
 
     public bool GetChunkAt(int x, int y, int z, out Chunk chunk)

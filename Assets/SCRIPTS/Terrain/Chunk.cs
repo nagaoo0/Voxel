@@ -275,10 +275,25 @@ public class Chunk
         builder = null;
     }
 
-    /* public async Task AsyncGenerateMesh()
-    {
-        //
-    } */
+    public async Task AsyncMesher(){
+        MeshBuilder builder = new MeshBuilder(position, blocks);
+        builder.Start();
+        builder.Update();
+        mesh = await Task.Run(() =>
+        {
+            mesh = builder.GetMesh(ref mesh);
+            return mesh;
+        });
+
+        //mesh = await builder.GetMesh(ref mesh);
+        if (mesh.vertexCount > 0)
+            //MeshColliderRegion.AddMeshCollider(this, mesh);
+        //Debug.Log("generated mesh at : " + position);
+
+        ready = true;
+        builder = null;
+    }
+
 
     public Block GetBlockAt(float x, float y, float z)
     {
