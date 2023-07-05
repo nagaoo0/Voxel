@@ -7,8 +7,8 @@ public class StructureGenerator
 
      public static void GenerateRock(Vector3Int pos, float x, float y, float z, Block[] blocks)
     {
-        int r = Mathf.FloorToInt(Random.Range(5, 10));
-        r= 5;
+        //int r = Mathf.FloorToInt(Random.Range(5, 10));
+        int r= 5;
         for (int i = 0; i < r; i++)
         {
             for (int j = 0; j < r; j++)
@@ -45,7 +45,7 @@ public class StructureGenerator
 
     public static void GenerateTree(Vector3Int pos, float x, float y, float z, Block[] blocks)
     {
-        int r = Mathf.FloorToInt(Random.Range(6, 10));
+        int r = 5;//Mathf.FloorToInt(Random.Range(6, 10));
 
         //Leaves
         for (int i = 0; i < 3; i++)
@@ -84,17 +84,17 @@ public class StructureGenerator
 
         for (int t = 0; t < 3; t++)
         {
-            int l1 = Mathf.FloorToInt(Random.Range(4, 6));
-            int o1 =  Mathf.FloorToInt(Random.Range(-1, 1));
-            int o2 = Mathf.FloorToInt(Random.Range(-3, 1));
-            int o3 = Mathf.FloorToInt(Random.Range(-1, 1));
+            int l1 = 4; //Mathf.FloorToInt(Random.Range(4, 6));
+            int o1 = 0; //Mathf.FloorToInt(Random.Range(-1, 1));
+            int o2 = -2;//Mathf.FloorToInt(Random.Range(-3, 1));
+            int o3 = 0; //Mathf.FloorToInt(Random.Range(-1, 1));
             for (int i = -l1 / 2; i <= l1 / 2; i++)
             {
                 for (int j = 0; j <= l1 / 2; j++)
                 {
                     for (int k = -l1 / 2; k <= l1 / 2; k++)
                     {
-                        if (Random.Range(0, 5) == 1 && i == -l1 / 2 || i == l1 / 2 && j == -l1 / 2 || j == l1){
+                        if (/* Random.Range(0, 5) == 1 && */ i == -l1 / 2 || i == l1 / 2 && j == -l1 / 2 || j == l1){
                             continue;
                         }
                         if (IsPointInBounds(x + i + o1, y + j + r + o2, z + k + o3))

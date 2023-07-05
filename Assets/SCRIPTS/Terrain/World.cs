@@ -64,6 +64,7 @@ public class World : MonoBehaviour
                     chunkPosMap.Add(chunk.position, chunk);
 
                     StartCoroutine(chunk.GenerateMesh());
+                    chunk.isVisible = true;
                 }
             }
         }
@@ -73,7 +74,7 @@ public class World : MonoBehaviour
             StartCoroutine(ch.GenerateMesh());
         }
 
-        StartCoroutine(HandleChunkLoading());
+        //StartCoroutine(HandleChunkLoading());
 
         //Debug.Log("Start Coroutine Generate Mesh");
     }
@@ -86,7 +87,7 @@ public class World : MonoBehaviour
             chunkloader.position.y,
             chunkloader.position.z
         );
-        //UpdateVisibleChunks();
+        
 
         foreach (Chunk ch in chunkPosMap.Values)
         {
@@ -217,15 +218,18 @@ public class World : MonoBehaviour
                     }
                     else if (!chunkPosMap.ContainsKey(viewedChunkCoord))
                     {
-                        Chunk CurrenctCunck = new Chunk(viewedChunkCoord);
-                        newChunks.Add(CurrenctCunck);
-                        //await CurrenctCunck.GenerateBlockArray();
-                        //StartCoroutine (CurrenctCunck.GenerateMesh ());
-
-                        CurrenctCunck.UpdateChunk();
-                        if (CurrenctCunck.isVisible)
+                        if (viewedChunkCoord.y > 0)
                         {
-                            ChunksVisibleLastUpdate.Add(CurrenctCunck);
+                            Chunk CurrenctCunck = new Chunk(viewedChunkCoord);
+                            newChunks.Add(CurrenctCunck);
+                            //await CurrenctCunck.GenerateBlockArray();
+                            //StartCoroutine (CurrenctCunck.GenerateMesh ());
+
+                            CurrenctCunck.UpdateChunk();
+                            if (CurrenctCunck.isVisible)
+                            {
+                                ChunksVisibleLastUpdate.Add(CurrenctCunck);
+                            }
                         }
                     }
                 }
@@ -240,7 +244,6 @@ public class World : MonoBehaviour
                 //Debug.Log(newChunks[i]);
                 //StartCoroutine(newChunks[i].GenerateMesh());
                 GenerateNewChunks(newChunks[i].position, newChunks[i]);
-                
             }
         }
 
@@ -249,7 +252,6 @@ public class World : MonoBehaviour
             if (ch.isVisible)
             {
                 StartCoroutine(ch.GenerateMesh());
-                
             }
         }
     }
@@ -310,7 +312,7 @@ public class World : MonoBehaviour
         {
             if (n != null)
             {
-                StartCoroutine(n.GenerateMesh());     
+                StartCoroutine(n.GenerateMesh());
             }
         }
     }

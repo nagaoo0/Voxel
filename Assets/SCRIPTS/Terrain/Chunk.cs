@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 public class Chunk
 {
-    public static Vector3Int size = new Vector3Int(16, 16, 16);
+    public static Vector3Int size = new Vector3Int(32, 32, 32);
 
     public bool isVisible = false;
-    public static int BlockPerChunk = 16;
+    public static int BlockPerChunk = 32;
 
     public static float offset = (float)size.x / (float)BlockPerChunk;
 
-    public static float waterLevel = 16 * offset;
+    public static float waterLevel = 32 * offset;
     public Mesh mesh;
     public Vector3Int position;
     public bool ready = false;
@@ -34,6 +34,13 @@ public class Chunk
     public async Task GenerateBlockArray()
     {
         blocks = new Block[BlockPerChunk * BlockPerChunk * BlockPerChunk];
+        int[] random;
+        random = new int[BlockPerChunk * BlockPerChunk * BlockPerChunk];
+        for (int x = 0; x < random.Length; x++)
+        {
+            random[x] = Random.Range(-2, 4);
+        }
+
         blocks = await Task.Run(() =>
         {
             Block[] blocks = new Block[BlockPerChunk * BlockPerChunk * BlockPerChunk];
@@ -45,8 +52,12 @@ public class Chunk
                 {
                     for (int z = 0; z < BlockPerChunk; z++)
                     {
-                        float r = 0; //Random.Range(-2 * offset, 1 * offset);
-                        //r = 0;
+                        //float r = 0; //Random.Range(-2 * offset, 1 * offset);
+                        float r = random[
+                            x * Chunk.BlockPerChunk * Chunk.BlockPerChunk
+                                + y * Chunk.BlockPerChunk
+                                + z
+                        ];
 
                         //if (index > 8*8){continue;}
 
@@ -60,6 +71,11 @@ public class Chunk
                             oy + position.y,
                             oz + position.z
                         );
+
+                        float warp = Mathf.PerlinNoise(
+                                (ox + position.x + World.instance.Seed*2) / 128f,
+                                (oz + position.z + World.instance.Seed*2) / 128f
+                            ) * 100 ;
 
                         float perlinMask2D =
                             Mathf.PerlinNoise(
@@ -87,32 +103,32 @@ public class Chunk
 
                         float perlin2DValue =
                             Mathf.PerlinNoise(
-                                (ox + position.x + World.instance.Seed) / 128f,
-                                (oz + position.z + World.instance.Seed) / 128f
+                                (ox + position.x + World.instance.Seed+ warp) / 128f,
+                                (oz + position.z + World.instance.Seed+ warp) / 128f
                             ) * 64f
                             + Mathf.PerlinNoise(
-                                (ox + position.x + World.instance.Seed + 86) / 64f,
-                                (oz + position.z + World.instance.Seed + 86) / 64f
+                                (ox + position.x + World.instance.Seed + 86+ warp) / 64f,
+                                (oz + position.z + World.instance.Seed + 86+ warp) / 64f
                             ) * 12f
                             + Mathf.PerlinNoise(
-                                (ox + position.x + World.instance.Seed - 600) / 32f,
-                                (oz + position.z + World.instance.Seed - 600) / 32f
+                                (ox + position.x + World.instance.Seed - 600+ warp) / 32f,
+                                (oz + position.z + World.instance.Seed - 600+ warp) / 32f
                             ) * 10f
                             + (
                                 Mathf.PerlinNoise(
-                                    (ox + position.x + World.instance.Seed + 5) / 512f,
-                                    (oz + position.z + World.instance.Seed + 5) / 512f
+                                    (ox + position.x + World.instance.Seed + 5+ warp) / 512f,
+                                    (oz + position.z + World.instance.Seed + 5+ warp) / 512f
                                 ) * 20f
                             )
                                 * (
                                     Mathf.PerlinNoise(
-                                        (ox + position.x + World.instance.Seed + 200) / 124f,
-                                        (oz + position.z + World.instance.Seed + 200) / 124f
+                                        (ox + position.x + World.instance.Seed + 200+ warp) / 124f,
+                                        (oz + position.z + World.instance.Seed + 200+ warp) / 124f
                                     )
                                     + (
                                         Mathf.PerlinNoise(
-                                            (ox + position.x + World.instance.Seed - 100) / 200f,
-                                            (oz + position.z + World.instance.Seed - 100) / 200f
+                                            (ox + position.x + World.instance.Seed - 100+ warp) / 200f,
+                                            (oz + position.z + World.instance.Seed - 100+ warp) / 200f
                                         ) * 5f
                                     ) / 10
                                 );
@@ -125,12 +141,12 @@ public class Chunk
                         );
 
                         float perlin3D = Perlin3D(
-                            (ox + position.x + World.instance.Seed + 46) / 64f,
-                            (oy + position.y + World.instance.Seed + 841) / 64f,
-                            (oz + position.z + World.instance.Seed + 452) / 64f
+                            (ox + position.x + World.instance.Seed + 46+ warp + perlin2DValue) / 256f,
+                            (oy + position.y + World.instance.Seed + 841+ warp + perlin2DValue) / 64f,
+                            (oz + position.z + World.instance.Seed + 452+ warp + perlin2DValue) / 128f
                         );
 
-                        if (perlinMask2D > perlin2DValue && perlin3D > 0.5 && perlin2DValue > 52)
+                        /* if (perlinMask2D > perlin2DValue && perlin3D > 0.5 && perlin2DValue > waterLevel + 10)
                         {
                             if (oy + position.y <= perlinMask2D - 5 + r)
                             {
@@ -147,7 +163,7 @@ public class Chunk
                             {
                                 blocks[index] = Block.Grass;
                             }
-                        }
+                        } */
 
                         //Rules
                         if (blocks[index] == Block.Air)
@@ -190,9 +206,9 @@ public class Chunk
                         )
                             blocks[index] = Block.Water;
 
-                        /* //Generate Structures
+                        //Generate Structures
                         if (oy + position.y > perlin2DValue) {
-                            if (oy + position.y == perlin2DValue + offset && perlin2DValue > 0 && perlin2DValue < 60 && Random.Range (0, 350) == 1) {
+                            if (oy + position.y == perlin2DValue + offset && perlin2DValue > 0 && perlin2DValue < 60 && r == 1) {
                                 //StructureGenerator.GenerateRock (position, x, y, z, blocks);
                             } else
                             if (oy + position.y < 50 && blocks[index] == Block.Air)
@@ -201,14 +217,14 @@ public class Chunk
                                 index++;
                                 continue;
                             }
-                        } */
+                        }
 
-                        //if (perlin2DValue == (oy + position.y) && blocks[index] == Block.Grass) /*&& perlin2DValue - 1 < (oy + position.y)  && blocks[index] == Block.Air */
-                        /* {
-                            int Density = 20;
-                            if (VegetationMask > 0.5 + r / 10)
+                        /* if (perlin2DValue == (oy + position.y) && blocks[index] == Block.Grass)
+                        {
+                            //int Density = 20;
+                            if (VegetationMask > 0.5)
                             {
-                                if (Random.Range(0, 1000 / Density) == 1)
+                                if (r == -4) //if (Random.Range(0, 1000 / Density) == 1)
                                 {
                                     //blocks[index] = Block.Water;
                                     StructureGenerator.GenerateTree(position, x, y, z, blocks);
@@ -216,20 +232,20 @@ public class Chunk
                             }
 
                             //Debug.Log("Tree Generated");
-                        } */
+                        }*/
 
-                        if (blocks[index] == Block.Stone)
+                        if (blocks[index] != Block.Air)
                         {
-                            if (perlin2DValue * 0.75 + r > (oy + position.y))
+                            if (perlin2DValue * (Mathf.Clamp(VegetationMask, 0, 1)) + Mathf.RoundToInt(Mathf.Clamp(r, 0, 1)) > (oy + position.y))
                             {
                                 float cracks = Mathf.Abs(perlin3D * 2 - 1);
                                 //Debug.Log(cracks);
-                                if (cracks < 0.05)
+                                if (cracks < 0.025)
                                 {
                                     blocks[index] = Block.Air;
                                 }
                             }
-                        }
+                        } 
 
                         /// END RULES
                         index++;
@@ -269,31 +285,11 @@ public class Chunk
         mesh = builder.GetMesh(ref mesh);
         if (mesh.vertexCount > 0)
             //MeshColliderRegion.AddMeshCollider(this, mesh);
-        //Debug.Log("generated mesh at : " + position);
+            //Debug.Log("generated mesh at : " + position);
 
-        ready = true;
+            ready = true;
         builder = null;
     }
-
-    public async Task AsyncMesher(){
-        MeshBuilder builder = new MeshBuilder(position, blocks);
-        builder.Start();
-        builder.Update();
-        mesh = await Task.Run(() =>
-        {
-            mesh = builder.GetMesh(ref mesh);
-            return mesh;
-        });
-
-        //mesh = await builder.GetMesh(ref mesh);
-        if (mesh.vertexCount > 0)
-            //MeshColliderRegion.AddMeshCollider(this, mesh);
-        //Debug.Log("generated mesh at : " + position);
-
-        ready = true;
-        builder = null;
-    }
-
 
     public Block GetBlockAt(float x, float y, float z)
     {
