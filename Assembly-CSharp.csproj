@@ -678,11 +678,23 @@
     <Reference Include="System.Xml.Serialization">
         <HintPath>D:\Software\GameDev\Unity\2022.3.3f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.MemoryProfiler">
+        <HintPath>D:\Work\REPOS\GitHub\Voxel\Library\ScriptAssemblies\Unity.MemoryProfiler.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
         <HintPath>D:\Work\REPOS\GitHub\Voxel\Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.EditorCoroutines.Editor">
+        <HintPath>D:\Work\REPOS\GitHub\Voxel\Library\ScriptAssemblies\Unity.EditorCoroutines.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.MemoryProfiler.Editor.MemoryProfilerModule">
+        <HintPath>D:\Work\REPOS\GitHub\Voxel\Library\ScriptAssemblies\Unity.MemoryProfiler.Editor.MemoryProfilerModule.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Runtime">
         <HintPath>D:\Work\REPOS\GitHub\Voxel\Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.MemoryProfiler.Editor">
+        <HintPath>D:\Work\REPOS\GitHub\Voxel\Library\ScriptAssemblies\Unity.MemoryProfiler.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Universal.Runtime">
         <HintPath>D:\Work\REPOS\GitHub\Voxel\Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
